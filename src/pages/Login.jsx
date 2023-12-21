@@ -20,7 +20,7 @@ const Login = () => {
         // Add your login logic here
         try {
             setLoading(true);
-            const res = await apiService.post('/login', { email, password },{
+            const res = await apiService.post('/admin-login', { email, password },{
             'Accept': 'application/json',
             })
             localStorage.setItem('token', res.data.token);

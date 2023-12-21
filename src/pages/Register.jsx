@@ -27,10 +27,10 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const payload = { name, email, password, password_confirmation:confirm_password, type:'admin' };
+        const payload = { name, email, password, password_confirmation:confirm_password, user_type:'admin' };
         try {
             setLoading(true)
-            const res = await apiService.post('/register', payload );
+            const res = await apiService.post('/admin-register', payload );
             if(res?.data){
                 localStorage.setItem('token', res.data.token);
                 localStorage.setItem('user', JSON.stringify(res.data.user));
