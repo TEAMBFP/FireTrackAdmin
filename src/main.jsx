@@ -10,6 +10,10 @@ import ErrorPage from './pages/ErrorPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Incidents from './pages/Incidents';
+import UpdateIncident from './pages/UpdateIncident';
+import ProfileSideBar from './component/ProfileSideBar';
+import AccounInfo from './pages/AccountInfo';
+import ChangePass from './pages/ChangePass';
 
 const privateRoutes = createBrowserRouter([
   {
@@ -18,9 +22,27 @@ const privateRoutes = createBrowserRouter([
     errorElement:<ErrorPage/>,
     children: [
       {
-        path: "/incidents",
+        path: "/",
         element: <Incidents />,
       },
+      {
+        path: "update-incident",
+        element: <UpdateIncident />,
+      },
+      {
+        path:"account",
+        element:<ProfileSideBar/>,
+        children:[
+          {
+            path:"",
+            element:<AccounInfo/>,
+          },
+          {
+            path:"change-password",
+            element:<ChangePass/>,
+          }
+        ]
+      }
     ],
   },
   

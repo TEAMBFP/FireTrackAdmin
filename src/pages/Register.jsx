@@ -1,5 +1,6 @@
 import  { useState } from 'react';
 import apiService from '../api';
+import Select from '../component/Select';
 
 const Register = () => {
     const [name, setName] = useState('');
@@ -8,6 +9,13 @@ const Register = () => {
     const [confirm_password, setConfirmPassword] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [additional_details, setAdditionalDetails] = useState({
+        phone_no:'',
+        birthday:'',
+        position:'',
+        address:'',
+        gender:''
+    });
 
     const handleNameChange = (e) => {
         setName(e.target.value);
@@ -27,7 +35,15 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const payload = { name, email, password, password_confirmation:confirm_password, user_type:'admin' };
+        const payload = { 
+                name, 
+                email, 
+                password, 
+                password_confirmation:confirm_password, 
+                user_type:'admin',
+                info:additional_details
+
+        };
         try {
             setLoading(true)
             const res = await apiService.post('/admin-register', payload );
@@ -42,17 +58,64 @@ const Register = () => {
             setError(error.response.data.message)
         }
 
-        // Handle form submission logic here
     };
 
     return (
        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', width:'100%' }}>
             <div>
-            <form style={{ width: '320px', padding: '20px 50px 20px 50px', border: '1px solid #ccc', borderRadius: '5px' }} onSubmit={handleSubmit}>
+            <form style={{  padding: '20px 50px 20px 50px', border: '1px solid #ccc', borderRadius: '5px' }} onSubmit={handleSubmit}>
                 <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Register</h2>
                 <div style={{ marginBottom: '10px' }}>
-                    <label htmlFor="email">Name:</label>
+                    <label> Fullname:</label>
                     <input  value={name} onChange={handleNameChange} style={{ width: '100%', padding: '5px', border:'1px solid gray' }} />
+                </div>
+                <div style={{ marginBottom: '10px', display:'flex', justifyContent:'space-between' }}>
+                    <div style={{width:'47%'}}>
+                        <label> Phone no:</label>
+                        <input
+                            onChange={(e)=>
+                                setAdditionalDetails({...additional_details, phone_no:e.target.value})
+                            } 
+                            style={{ width: '100%', padding: '5px', border:'1px solid gray' }} 
+                        />
+                    </div>
+                    <div style={{width:'47%'}}>
+                        <label >Birthday:</label>
+                        <input  
+                            onChange={(e)=>
+                                setAdditionalDetails({...additional_details, birthday:e.target.value})
+                            } 
+                            style={{ width: '100%', padding: '5px', border:'1px solid gray' }} 
+                            type="date"
+                        />
+                    </div>
+                </div>
+                <div style={{ marginBottom: '10px', display:'flex', justifyContent:'space-between' }}>
+                    <div style={{width:'47%'}}>
+                        <label >Address</label>
+                        <input  
+                            onChange={(e)=>
+                                setAdditionalDetails({...additional_details, address:e.target.value})
+                            } 
+                            style={{ width: '100%', padding: '5px', border:'1px solid gray' }} 
+                        />
+                    </div>
+                    <div style={{width:'47%'}}>
+                        <label >Gender</label>
+                        <Select
+                            options={['male', 'female']}
+                            onChange={(e)=>
+                                setAdditionalDetails({...additional_details, gender:e.target.value})
+                            }
+                        />
+                    </div>
+                </div>
+                <div style={{ marginBottom: '10px' }}>
+                    <label >Position:</label>
+                    <input 
+                        onChange={(e)=>setAdditionalDetails({...additional_details, position:e.target.value})} 
+                        style={{ width: '100%', padding: '5px', border:'1px solid gray' }} 
+                    />
                 </div>
                 <div style={{ marginBottom: '10px' }}>
                     <label htmlFor="email">Email:</label>

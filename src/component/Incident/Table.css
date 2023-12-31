@@ -1,0 +1,61 @@
+.table-container {
+  width: 100%;
+  overflow-x: auto; /* Allows the table to be scrollable when it overflows on small screens */
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse; /* Removes the double borders */
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 16px;
+  border-bottom: 1px solid #ddd; /* Adds a light horizontal line between rows */
+}
+
+.table th {
+  background-color: orange; /* Gives the header a nice green color */
+  color: white; /* Makes the header text white */
+}
+
+/* Makes every even row have a light grey background */
+.table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* Adds a nice hover effect to rows */
+.table tr:hover {
+  background-color: #ddd;
+}
+
+/* Makes the table responsive */
+@media screen and (max-width: 600px) {
+  .table thead {
+    display: none; /* Hides the headers on small screens */
+  }
+
+  .table tr {
+    margin-bottom: 10px;
+    display: block;
+    border-bottom: 2px solid #ddd;
+  }
+
+  .table td {
+    display: block;
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+  }
+
+  .table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 0;
+    width: 50%;
+    padding-left: 15px;
+    font-size: 15px;
+    font-weight: bold;
+  }
+}
