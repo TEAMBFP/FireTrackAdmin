@@ -1,13 +1,15 @@
 import React, { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { DateTimeFormat } from '../lib/DateTimeFormat';
-import Select from '../component/Select';
 import { useNavigate } from 'react-router-dom';
 import PageLoader from '../component/PageLoader';
 import apiService from '../api';
+import NestedDropdown from '../component/NestedDropdown/NestedDropdown.jsx';
+import SelectWithID from '../component/SelectWithID.jsx';
 
 
 const UpdateIncident = () => {
+
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const id = searchParams.get('id');
@@ -20,6 +22,7 @@ const UpdateIncident = () => {
     });
 
     const [incident, setIncident] = React.useState({
+        type:'',
         owner:'',
         fatality:'',
         damages:'',
@@ -35,6 +38,8 @@ const UpdateIncident = () => {
         status:'pending',
     });
 
+    const [listFireStatus, setListFireStatus] = React.useState([]);
+
     const [loading,setLoading] = React.useState(false);
 
 
@@ -47,7 +52,6 @@ const UpdateIncident = () => {
     const handleUpdate = async () => {
         setLoading(true);
         try {
-            
             const payload = {
                 incident: JSON.stringify(incident),
                 responder: JSON.stringify(responder),
@@ -55,9 +59,18 @@ const UpdateIncident = () => {
                 id,
             }
             const res = await apiService.post('/update-incident', payload);
-            setIncident(res.data.incident);
-            setResponder(res.data.responder);
-            setStatus(res.data.status);
+            if(res?.data?.incident){
+                setIncident(res.data.incident);
+            }
+            if(res?.data?.responder){
+                setResponder(res.data.responder);
+            }
+            if(res?.data?.status){
+                setStatus(res.data.status);
+            }
+            if(res?.data?.fireStatus){
+                setListFireStatus(res.data.fireStatus);
+            }
             setLoading(false);
         } catch (error) {
             console.log(error);
@@ -70,10 +83,18 @@ const UpdateIncident = () => {
             setLoading(true);
             try {
                 const res = await apiService.get(`/get-incident-details?id=${id}`);
-                console.log(res);
-                setIncident(res.data.incident);
-                setResponder(res.data.responder);
-                setStatus(res.data.status);
+                if(res?.data?.incident){
+                    setIncident(res.data.incident);
+                }
+                if(res?.data?.responder){
+                    setResponder(res.data.responder);
+                }
+                if(res?.data?.status){
+                    setStatus(res.data.status);
+                }
+                if(res?.data?.fireStatus){
+                    setListFireStatus(res.data.fireStatus);
+                }
                 setLoading(false)
             } catch (error) {
                 setLoading(false);
@@ -83,7 +104,6 @@ const UpdateIncident = () => {
         handGetDetails();
     },[id])
 
-    
   return (
     <div style={{
         backgroundColor:'white', 
@@ -121,6 +141,27 @@ const UpdateIncident = () => {
                     <span style={{fontWeight:'500', fontSize:'26px', margin:'5px 0px 5px 0px'}}>
                         Incident Information
                     </span>
+                     <span style={{fontWeight:'600'}}>
+                        Type of Occupancy
+                    </span>
+                    {/* <input
+                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
+                        placeholder="Type of Occupancy"
+                        onChange={(e)=>{
+                            setIncident({...incident, type:e.target.value})
+                        }}
+                        value={incident.type}
+                    /> */}
+                   <div style={{display:'flex', alignItems:'center'}}>
+                    <NestedDropdown
+                        handleType={(e)=>{
+                            setIncident({...incident, type:e})
+                        }}
+                    />
+                    <span style={{marginLeft:'9px'}}>
+                    {incident.type?.name}
+                    </span>
+                    </div>
                     <span style={{fontWeight:'600'}}>
                         Name of Owner
                     </span>
@@ -279,11 +320,14 @@ const UpdateIncident = () => {
                     <span style={{fontWeight:'600'}}>
                        Status
                     </span>
-                     <Select
-                            options={['pending', 'done', 'on-going']}
+                    {listFireStatus.length > 0 &&
+                     <SelectWithID
+                            options={listFireStatus}
                             onChange={handleChangeStatus}
                             value={status.status}
+                            loading={false}
                         />
+                    }
 
             </div>
         </div>

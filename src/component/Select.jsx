@@ -3,9 +3,8 @@ import React from 'react'
 
 export const Select = ({options,value, onChange}) => {
   return (
- 
     <select
-        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
+        style={{height:'45px',  width:'100%', fontSize:'16px', borderRadius:'8px', border:'1px solid #ccc', paddingTop:'10px', paddingBottom:'10px', outline:'none'}}
         onChange={onChange}
         value={value}
     >

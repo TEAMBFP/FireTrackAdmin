@@ -5,21 +5,22 @@ import React from "react";
 import Switch from "../component/Switch/Switch";
 import Table from "../component/Incident/Table";
 import useDebounce from "../lib/Debounce";
+import { useNavigate } from 'react-router-dom';
+import NestedDropdown from "../component/NestedDropdown/NestedDropdown";
 
 export default function Incidents() {
 
   const [incidents, setIncidents] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [tableMode, setTableMode] = React.useState(true);
-  const [search, setSearch] = React.useState('');
-  const delaySearch = useDebounce(search, 700);
+  const [filter, setFilter] = React.useState({filter:'', name:''});
 
 
   useEffect(()=>{
     const getIncidents = async () => {
       try {
         setLoading(true);
-        const response = await apiService.get('/reported-incidents?search='+delaySearch);
+        const response = await apiService.get('/reported-incidents?filter='+filter?.name||'');
         setIncidents(response.data);
         setLoading(false);
       } catch (error) {
@@ -28,7 +29,7 @@ export default function Incidents() {
       }
     }
     getIncidents();
-  },[delaySearch])
+  },[filter])
 
   const handleOnMyway = async (id) => {
     const user = JSON.parse(localStorage.getItem('user'))
@@ -58,6 +59,12 @@ export default function Incidents() {
       }
    }
 
+    const navigate = useNavigate();
+    const navigateToUpdateIncident = (id) => {
+        console.log(id);
+        navigate('/update-incident?id='+id);
+    }
+
 
   return (
     <div style={{height:'100%', overflow:'scroll', width:'100%'}}>
@@ -72,8 +79,33 @@ export default function Incidents() {
           <p style={{color:'orange', fontWeight:'bold', fontSize:'28px'}}>
               Incidents Managements
           </p>
-          <div>
-            <input style={{backgroundColor:'#E8E9EC'}} placeholder="Search" onChange={(e)=>setSearch(e.target.value)}/>
+          <div style={{display:'flex', alignItems:'center', marginRight:'150px'}}>
+            <NestedDropdown
+              handleType={(e)=>{
+                setFilter(e)
+              }}
+            />
+
+            {filter?.name&&
+           
+              <div style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
+
+                <div style={{marginLeft:'15px'}}>
+                  {filter?.name}
+                </div>
+
+                <div style={{cursor:'pointer', border:'1px solid black', borderRadius:'50%', display:'flex', alignItems:'center', marginLeft:'10px'}} onClick={()=>
+                  setFilter({
+                    filter:'',
+                    name:''
+                  })}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"  width={18} height={18}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                  </svg>
+                </div>
+              </div>
+            }
           </div>
         </div>
       </div>
@@ -81,7 +113,19 @@ export default function Incidents() {
       <div>Loading...</div> 
       : 
       tableMode ?
-      <Table data={incidents} />
+      <Table 
+        data={incidents} 
+        header={[
+          {header: 'Image', field:'image' },
+          {header: 'Incident ID', field: 'id'}, 
+          {header: 'Station', field: 'station'}, 
+          {header: 'Date', field: 'created_at'}, 
+          {header: 'Address', field:'location'}, 
+          {header: 'Status', field:'status'}, 
+          {header: 'Type of Occupancy', field:'type'},
+        ]}
+        onClick={navigateToUpdateIncident}
+      />
         :
       incidents.map((incident, index) => (
       <div id="contact" key={index} style={{marginBottom:'20px'}}>

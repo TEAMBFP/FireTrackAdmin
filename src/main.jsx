@@ -14,6 +14,9 @@ import UpdateIncident from './pages/UpdateIncident';
 import ProfileSideBar from './component/ProfileSideBar';
 import AccounInfo from './pages/AccountInfo';
 import ChangePass from './pages/ChangePass';
+import Firestations from './pages/Firestations';
+import FireType from './pages/FireType';
+import FireStatus from './pages/FireStatus';
 
 const privateRoutes = createBrowserRouter([
   {
@@ -26,7 +29,7 @@ const privateRoutes = createBrowserRouter([
         element: <Incidents />,
       },
       {
-        path: "update-incident",
+        path: "/update-incident",
         element: <UpdateIncident />,
       },
       {
@@ -42,6 +45,18 @@ const privateRoutes = createBrowserRouter([
             element:<ChangePass/>,
           }
         ]
+      },
+      {
+        path:'/stations',
+        element: <Firestations/>
+      },
+       {
+        path:'/fire-type',
+        element: <FireType/>
+      },
+      {
+        path:'/fire-status',
+        element: <FireStatus/>
       }
     ],
   },

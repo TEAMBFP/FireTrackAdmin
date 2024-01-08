@@ -1,0 +1,32 @@
+.dropdown {
+  position: relative;
+}
+
+.dropdown-button {
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  padding: 10px;
+  max-height: 260px;
+  min-width: 200px;
+  overflow-y: scroll;
+  border: 1px solid #ccc;
+}
+
+.dropdown-item {
+  cursor: pointer;
+  font-size: 0.85rem;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.dropdown-submenu .dropdown {
+  top: 0;
+  left: 100%;
+  margin-top: -1px;
+}

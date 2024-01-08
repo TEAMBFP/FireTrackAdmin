@@ -49,7 +49,7 @@ const AccounInfo = () => {
         console.log(error);
       }
   }
-  console.log(data?.image);
+  console.log(data?.info);
   return (
     <div style={{padding:'20px'}}>
         <div style={{display:'flex',justifyContent:'space-between'}}>

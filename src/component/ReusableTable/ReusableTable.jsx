@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import './Table.css';
+import './styles.css';
 
 
-const Table = ({data, header, onClick}) => {
+const ReusableTable = ({data, header, onClick, handleDelete}) => {
     return (
         <div className="table-container">
             <table className="table">
@@ -18,16 +18,20 @@ const Table = ({data, header, onClick}) => {
                     {data.length > 0 ?
                     data.map((item, index) => (
                      
-                        <tr key={index} onClick={()=>onClick(item.id)}>
+                        <tr key={index} >
                                {header.map((field,key) => (
                                
                                 field.field === 'image'?
                                 <img src={item[field.field]} style={{width:'100px', height:'100px'}} key={key}/>
                                 :
-                                 field.field === 'type'?
-                                <td key={key}>{item[field.field]?.name}</td>
+                                field.field === 'action'?
+                                <td key={key}> 
+                                    <button onClick={()=>handleDelete(item.id)}>
+                                        Delete
+                                    </button>
+                                </td>
                                 :
-                                 <td key={key}>{item[field.field]}</td>
+                                 <td key={key} onClick={()=>onClick(item)}>{item[field.field]}</td>
                                  ))}
                         </tr>
                       
@@ -44,4 +48,4 @@ const Table = ({data, header, onClick}) => {
     );
 };
 
-export default Table;
+export default ReusableTable;
