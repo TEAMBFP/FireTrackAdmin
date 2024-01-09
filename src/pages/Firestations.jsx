@@ -2,9 +2,11 @@ import React, { useEffect } from 'react'
 import apiService from '../api'
 import ReusableTable from '../component/ReusableTable/ReusableTable'
 import Modal from '../component/Modal/Modal'
+import Select from '../component/Select'
 
 const cols = [
           {header: 'Address', field:'address' },
+          {header: 'District', field:'district' },
           {header: 'Latitude', field: 'latitude'}, 
           {header: 'Longitude', field: 'longitude'}, 
           {header: 'Contact number', field: 'number'}, 
@@ -15,12 +17,30 @@ const Firestations = () => {
     const [firestations, setFirestations] = React.useState([]);
     const [isOpenUpdate, setIsOpenUpdate] = React.useState(false);
     const [isOpenAdd, setIsOpenAdd] = React.useState(false);
-    const [edit, setEdit] = React.useState('');
-    const [add, setAdd] = React.useState({address:'', latitude:'', longitude:'', number:''});
+    const [edit, setEdit] = React.useState({
+        id:'',
+        address:'',
+        latitude:'',
+        longitude:'',
+        number:'',
+        district:''
+    
+    });
+    const [add, setAdd] = React.useState({
+        address:'', 
+        latitude:'', 
+        longitude:'', 
+        number:'',
+        district:'Cagayan de oro'
+    });
+
+    const [filter, setFilter] = React.useState('');
+
     useEffect(() => {
         const handleGetFirestations = async () => {
             try {
-                const response = await apiService.get('/firestations');
+              
+                const response = await apiService.get('/firestations?district='+filter);
                 setFirestations(response.data);
             } catch (error) {
                 console.log(error);
@@ -28,12 +48,19 @@ const Firestations = () => {
         
         }
         handleGetFirestations();
-    }, [])
+    }, [filter])
 
     const ModalUpdateContent = () => {
         const handleUpdate = async () => {
             try {
-                await apiService.post('/update-firestation', {id: edit.id, address: edit.address, latitude: edit.latitude, longitude: edit.longitude, number: edit.number});
+                await apiService.post('/update-firestation', {
+                    id: edit.id, 
+                    address: edit.address, 
+                    latitude: edit.latitude, 
+                    longitude: edit.longitude, 
+                    number: edit.number,
+                    district: edit.district
+                });
                 window.location.reload();
             } catch (error) {
                 console.log(error);
@@ -46,6 +73,13 @@ const Firestations = () => {
                     placeholder="Address"
                     value={edit.address}
                     onChange={(e) => setEdit({...edit, address: e.target.value})}
+                />
+
+                 <Select
+                    options={[ 'Cagayan de Oro','Misamis Oriental', 'Misamis Occidental', 
+                        'Bukidnon', 'Camiguin', 'Lanao', 'Iligan']}
+                    onChange={(e) => setEdit({...edit, district: e.target.value})}
+                    value={edit.district}
                 />
 
                 <input
@@ -84,7 +118,13 @@ const Firestations = () => {
     const ModalAddContent = () => {
         const handleAdd = async () => {
             try {
-                await apiService.post('/create-firestation', {address: add.address, latitude: add.latitude, longitude: add.longitude, number: add.number});
+                await apiService.post('/create-firestation', {
+                    address: add.address, 
+                    latitude: add.latitude, 
+                    longitude: add.longitude, 
+                    number: add.number,
+                    district: add.district
+                });
                 window.location.reload();
             } catch (error) {
                 console.log(error);
@@ -97,6 +137,13 @@ const Firestations = () => {
                     placeholder="Address"
                     value={add.address}
                     onChange={(e) => setAdd({...add, address: e.target.value})}
+                />
+
+                 <Select
+                    options={[ 'Cagayan de Oro','Misamis Oriental', 'Misamis Occidental', 
+                        'Bukidnon', 'Camiguin', 'Lanao', 'Iligan']}
+                    onChange={(e) => setAdd({...add, district: e.target.value})}
+                    value={add.district}
                 />
 
                 <input
@@ -143,6 +190,9 @@ const Firestations = () => {
     
   return (
     <div style={{overflow:'scroll', height:'100%'}}>
+        <p style={{color:'orange', fontWeight:'bold', fontSize:'28px'}}>
+              Incidents Managements
+          </p>
         <Modal
             open={isOpenAdd}
             Content={ModalAddContent}
@@ -153,10 +203,23 @@ const Firestations = () => {
             Content={ModalUpdateContent}
             Title='Update fire station'
         />
-        <div style={{display:'flex', justifyContent:'end', marginBottom:'10px'}}>
+        <div style={{display:'flex', justifyContent:'space-between', marginBottom:'10px', alignItems:'center'}}>
+             <div style={{width:'16%', marginTop:'13px', fontWeight:'bold'}}>
+                <div >
+                    Filter by district
+                </div>
+                <Select
+                    options={[ 'All','Cagayan de Oro','Misamis Oriental', 'Misamis Occidental', 
+                        'Bukidnon', 'Camiguin', 'Lanao', 'Iligan']}
+                    onChange={(e) => setFilter(e.target.value === 'All' ? '' : e.target.value)}
+                    value={filter}
+                />
+            </div>
+            <div>
             <button onClick={()=>setIsOpenAdd(true)}>
                 Add
             </button>
+            </div>
         </div>
         <ReusableTable
             data={firestations}

@@ -4,23 +4,25 @@ import apiService from "../api";
 import React from "react";
 import Switch from "../component/Switch/Switch";
 import Table from "../component/Incident/Table";
-import useDebounce from "../lib/Debounce";
 import { useNavigate } from 'react-router-dom';
-import NestedDropdown from "../component/NestedDropdown/NestedDropdown";
+import Select from "../component/Select";
 
 export default function Incidents() {
 
   const [incidents, setIncidents] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [tableMode, setTableMode] = React.useState(true);
-  const [filter, setFilter] = React.useState({filter:'', name:''});
+  const [district, setDistrict] = React.useState('select district');
+  const [firestations, setFirestations] = React.useState([]);
+  const [station, setStation] = React.useState('');
+    
 
 
   useEffect(()=>{
     const getIncidents = async () => {
       try {
         setLoading(true);
-        const response = await apiService.get('/reported-incidents?filter='+filter?.name||'');
+        const response = await apiService.get('/reported-incidents?station='+station);
         setIncidents(response.data);
         setLoading(false);
       } catch (error) {
@@ -29,7 +31,30 @@ export default function Incidents() {
       }
     }
     getIncidents();
-  },[filter])
+  },[station])
+
+  useEffect(()=>{
+    const handleGetFirestations = async () => {
+      if(district === 'Select district'){
+        setStation('');
+        return;
+      }
+      try {
+          const response = await apiService.get('/firestations?district='+district);
+          setFirestations(response.data);
+          if(response.data.length > 0){
+             setStation(response.data[0].address);
+          }else{
+            setStation(false);
+          }
+         
+      } catch (error) {
+          console.log(error);
+      }
+
+    }
+    handleGetFirestations();
+  },[district])
 
   const handleOnMyway = async (id) => {
     const user = JSON.parse(localStorage.getItem('user'))
@@ -65,7 +90,6 @@ export default function Incidents() {
         navigate('/update-incident?id='+id);
     }
 
-
   return (
     <div style={{height:'100%', overflow:'scroll', width:'100%'}}>
       <div>
@@ -75,38 +99,31 @@ export default function Incidents() {
             onChange={() => setTableMode(!tableMode)}
           />
         </div>
-        <div style={{padding:'10px', borderRadius:'10px', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+        <div style={{padding:'10px', borderRadius:'10px',}}>
           <p style={{color:'orange', fontWeight:'bold', fontSize:'28px'}}>
               Incidents Managements
           </p>
-          <div style={{display:'flex', alignItems:'center', marginRight:'150px'}}>
-            <NestedDropdown
-              handleType={(e)=>{
-                setFilter(e)
-              }}
-            />
-
-            {filter?.name&&
-           
-              <div style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
-
-                <div style={{marginLeft:'15px'}}>
-                  {filter?.name}
+            <div style={{width:'50%', marginTop:'13px', display:'flex'}}>
+              <div style={{width:'35%', marginRight:'10px'}}>
+                <Select
+                    options={[ 'Select district','Cagayan de Oro','Misamis Oriental', 'Misamis Occidental', 
+                        'Bukidnon', 'Camiguin', 'Lanao', 'Iligan']}
+                    onChange={(e) => setDistrict(e.target.value)}
+                    value={district}
+                />
                 </div>
-
-                <div style={{cursor:'pointer', border:'1px solid black', borderRadius:'50%', display:'flex', alignItems:'center', marginLeft:'10px'}} onClick={()=>
-                  setFilter({
-                    filter:'',
-                    name:''
-                  })}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"  width={18} height={18}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                  </svg>
-                </div>
-              </div>
-            }
-          </div>
+                
+                {firestations?.length > 0 &&
+                 <div style={{width:'60%'}}>
+                   <Select
+                    options={firestations.map((item) => item.address)}
+                    onChange={(e) => setStation(e.target.value)}
+                    value={station}
+                  />
+                  </div>
+                }
+                
+            </div>
         </div>
       </div>
     {loading && incidents.length === 0 ? 
