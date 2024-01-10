@@ -35,9 +35,9 @@ export default function Incidents() {
 
   useEffect(()=>{
     const handleGetFirestations = async () => {
-      if(district === 'Select district'){
+      if(district === 'select district'){
         setStation('');
-        return;
+        return 0;
       }
       try {
           const response = await apiService.get('/firestations?district='+district);
@@ -45,7 +45,7 @@ export default function Incidents() {
           if(response.data.length > 0){
              setStation(response.data[0].address);
           }else{
-            setStation(false);
+             setStation(false);
           }
          
       } catch (error) {
@@ -106,7 +106,7 @@ export default function Incidents() {
             <div style={{width:'50%', marginTop:'13px', display:'flex'}}>
               <div style={{width:'35%', marginRight:'10px'}}>
                 <Select
-                    options={[ 'Select district','Cagayan de Oro','Misamis Oriental', 'Misamis Occidental', 
+                    options={[ 'select district','Cagayan de Oro','Misamis Oriental', 'Misamis Occidental', 
                         'Bukidnon', 'Camiguin', 'Lanao', 'Iligan']}
                     onChange={(e) => setDistrict(e.target.value)}
                     value={district}
