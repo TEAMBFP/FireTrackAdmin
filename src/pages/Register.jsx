@@ -1,8 +1,12 @@
-import  { useState } from 'react';
+import  { useState, useContext } from 'react';
 import apiService from '../api';
 import Select from '../component/Select';
+import { positions } from '../constants/Positions';
+import SelectWithId from '../component/SelectWithId';
+import { GlobalVariables } from '../GlobalState/GlobalVariables';
 
 const Register = () => {
+    const {fireStations, districts} = useContext(GlobalVariables);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -14,7 +18,9 @@ const Register = () => {
         birthday:'',
         position:'',
         address:'',
-        gender:''
+        gender:'',
+        district_id:'',
+        firestation_id:''
     });
 
     const handleNameChange = (e) => {
@@ -59,7 +65,6 @@ const Register = () => {
         }
 
     };
-
     return (
        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', width:'100%' }}>
             <div>
@@ -103,19 +108,56 @@ const Register = () => {
                     <div style={{width:'47%'}}>
                         <label >Gender</label>
                         <Select
-                            options={['male', 'female']}
+                            options={['Select gender', 'male', 'female']}
                             onChange={(e)=>
                                 setAdditionalDetails({...additional_details, gender:e.target.value})
                             }
+
                         />
                     </div>
                 </div>
                 <div style={{ marginBottom: '10px' }}>
                     <label >Position:</label>
-                    <input 
+                    {/* <input 
                         onChange={(e)=>setAdditionalDetails({...additional_details, position:e.target.value})} 
                         style={{ width: '100%', padding: '5px', border:'1px solid gray' }} 
+                    /> */}
+                    <Select
+                        options={['Select position',...positions]} 
+                        fontSize={'0.75rem'}
+                        onChange={(e)=>
+                            setAdditionalDetails({...additional_details, position:e.target.value})
+                        }
+                        value={additional_details.position}
                     />
+                </div>
+                <div style={{ marginBottom: '10px', display:'flex', justifyContent:'space-between' }}>
+                        <div style={{width:'47%'}}>
+                            <label >District</label>
+                            <SelectWithId 
+                                options={[
+                                    {id:0, name:'Select district'}
+                                    ,...districts]}
+                                field={'name'}
+                                value={additional_details.district_id}
+                                onChange={(e)=>
+                                    setAdditionalDetails({...additional_details, district_id:e.target.value})
+                                }
+                            />
+                        </div>
+                        <div style={{width:'47%'}}>
+                            <label >Firestation</label>
+                            <SelectWithId
+                                options={[
+                                    {id:0, address:'Select firestation'}
+                                    ,...fireStations]}
+                                field={'address'}
+                                value={additional_details.firestation_id}
+                                onChange={(e)=>
+                                    setAdditionalDetails({...additional_details, firestation_id:e.target.value})
+                                }
+                            />
+                        </div>
                 </div>
                 <div style={{ marginBottom: '10px' }}>
                     <label htmlFor="email">Email:</label>

@@ -17,6 +17,8 @@ import ChangePass from './pages/ChangePass';
 import Firestations from './pages/Firestations';
 import FireType from './pages/FireType';
 import FireStatus from './pages/FireStatus';
+import GlobalVariablesProvider from './GlobalState/GlobalVariables';
+import District from './pages/District';
 
 const privateRoutes = createBrowserRouter([
   {
@@ -57,6 +59,10 @@ const privateRoutes = createBrowserRouter([
       {
         path:'/fire-status',
         element: <FireStatus/>
+      },
+      {
+        path: "/district",
+        element:<District/>
       }
     ],
   },
@@ -83,6 +89,8 @@ const auth = localStorage.getItem('token');
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-        <RouterProvider router={auth ?privateRoutes:publicRoute} />
+        <GlobalVariablesProvider>
+          <RouterProvider router={auth ?privateRoutes:publicRoute} />
+        </GlobalVariablesProvider>
   </React.StrictMode>,
 )

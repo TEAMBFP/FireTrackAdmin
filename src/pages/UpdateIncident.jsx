@@ -326,6 +326,7 @@ const UpdateIncident = () => {
                             onChange={handleChangeStatus}
                             value={status.status}
                             loading={false}
+                            field={'status'}
                         />
                     }
 

@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
 
-export const Select = ({options,value, onChange}) => {
+export const Select = ({options,value, onChange, fontSize}) => {
   return (
     <select
-        style={{height:'45px',  width:'100%', fontSize:'16px', borderRadius:'8px', border:'1px solid #ccc', paddingTop:'10px', paddingBottom:'10px', outline:'none'}}
+        style={{height:'38px',  width:'100%', fontSize:fontSize, borderRadius:'8px', border:'1px solid black', outline:'none'}}
         onChange={onChange}
         value={value}
     >
