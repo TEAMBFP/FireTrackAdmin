@@ -25,7 +25,7 @@ const Table = ({data, header, onClick}) => {
                                 <img src={item[field.field]} style={{width:'100px', height:'100px'}} key={key}/>
                                 :
                                  field.field === 'type'?
-                                <td key={key}>{item[field.field]?.name}</td>
+                                <td key={key}>{item[field.field]}</td>
                                 :
                                  <td key={key}>{item[field.field]}</td>
                                  ))}

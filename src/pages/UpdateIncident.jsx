@@ -4,8 +4,8 @@ import { DateTimeFormat } from '../lib/DateTimeFormat';
 import { useNavigate } from 'react-router-dom';
 import PageLoader from '../component/PageLoader';
 import apiService from '../api';
-import NestedDropdown from '../component/NestedDropdown/NestedDropdown.jsx';
 import SelectWithID from '../component/SelectWithID.jsx';
+import { GetFireStatus } from '../api/FireVariablesAPI';
 
 
 const UpdateIncident = () => {
@@ -101,6 +101,15 @@ const UpdateIncident = () => {
                 console.log(error);
             }
         }
+        const handGetFireStatus = async () => {
+            try {
+                const res = await GetFireStatus();
+                setListFireStatus(res.data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        handGetFireStatus()
         handGetDetails();
     },[id])
 
@@ -141,104 +150,54 @@ const UpdateIncident = () => {
                     <span style={{fontWeight:'500', fontSize:'26px', margin:'5px 0px 5px 0px'}}>
                         Incident Information
                     </span>
-                     <span style={{fontWeight:'600'}}>
+                    <span style={{fontWeight:'600'}}>
                         Type of Occupancy
                     </span>
-                    {/* <input
-                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
-                        placeholder="Type of Occupancy"
-                        onChange={(e)=>{
-                            setIncident({...incident, type:e.target.value})
-                        }}
-                        value={incident.type}
-                    /> */}
-                   <div style={{display:'flex', alignItems:'center'}}>
-                    <NestedDropdown
-                        handleType={(e)=>{
-                            setIncident({...incident, type:e})
-                        }}
-                    />
-                    <span style={{marginLeft:'9px'}}>
-                    {incident.type?.name}
+                    <span>
+                        {incident.type}
                     </span>
-                    </div>
                     <span style={{fontWeight:'600'}}>
                         Name of Owner
                     </span>
-                    <input
-                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
-                        placeholder="Owner"
-                        onChange={(e)=>{
-                            setIncident({...incident, owner:e.target.value})
-                        }}
-                        value={incident.owner}
-                    />
+                    <span>
+                        {incident.owner}
+                    </span>
                     <span style={{fontWeight:'600'}}>
                         Fatality
                     </span>
-                    <input 
-                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
-                        placeholder="Fatality"
-                        onChange={(e)=>{
-                            setIncident({...incident, fatality:e.target.value})
-                        }}
-                        value={incident.fatality}
-                    />
+                    <span>
+                        {incident.fatality}
+                    </span>
                     <span style={{fontWeight:'600'}}>
                         Estimated Damages
                     </span>
-                    <input
-                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
-                        placeholder="Damages"
-                        onChange={(e)=>{
-                            setIncident({...incident, damages:e.target.value})
-                        }}
-                        value={incident.damages}
-                    />
+                    <span>
+                        {incident.damages}
+                    </span>
                     <span style={{fontWeight:'600'}}>
                         Injured
                     </span>
-                    <input
-                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
-                        placeholder="injured"
-                        onChange={(e)=>{
-                            setIncident({...incident, injured:e.target.value})
-                        }}
-                        value={incident.injured}
-                    />
+                    <span>
+                        {incident.injured}
+                    </span>
                     <span style={{fontWeight:'600'}}>
                         Number of House/Establishment
                     </span>
-                    <input
-                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
-                        placeholder="Number House/Establishment"
-                        onChange={(e)=>{
-                            setIncident({...incident, numHouseAndEstablishment:e.target.value})
-                        }}
-                        value={incident.numHouseAndEstablishment}
-                    />
+                    <span>
+                        {incident.numHouseAndEstablishment}
+                    </span>
                     <span style={{fontWeight:'600'}}>
                         Number of Family Affected
                     </span>
-                    <input
-                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
-                        placeholder="Number of affected"
-                        onChange={(e)=>{
-                            setIncident({...incident, numFamilyAffected:e.target.value})
-                        }}
-                        value={incident.numFamilyAffected}
-                    />
+                    <span>
+                        {incident.numFamilyAffected}
+                    </span>
                     <span style={{fontWeight:'600'}}>
                         Number of Trucks Responded
                     </span>
-                    <input
-                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
-                        placeholder="Number of trucks responded"
-                        onChange={(e)=>{
-                            setIncident({...incident, numTrucksResponded:e.target.value})
-                        }}
-                        value={incident.numTrucksResponded}
-                    />
+                    <span>
+                        {incident.numTrucksResponded}
+                    </span>
 
             </div>
 
@@ -248,48 +207,28 @@ const UpdateIncident = () => {
                     <span style={{fontWeight:'600'}}>
                         Ground Commander
                     </span>
-                    <input
-                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
-                        placeholder="Name"
-                        onChange={(e)=>{
-                            setResponder({...responder, commander:e.target.value})
-                        }}
-                        value={responder.commander}
-                    />
+                    <span>
+                        {responder.commander}
+                    </span>
+
                     <span style={{fontWeight:'600'}}>
                         Time/Date Reported
                     </span>
-                    <input 
-                        type="datetime-local" 
-                        value={responder.date}
-                        onChange={(e)=>{
-                            setResponder({...responder, date: DateTimeFormat( new Date(e.target.value) )})
-                        }}
-                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
-                    />
+                    <span>
+                        {responder.date}
+                    </span>
                     <span style={{fontWeight:'600'}}>
                         Responding Team
                     </span>
-                    <input
-                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
-                        placeholder="Name"
-                        onChange={(e)=>{
-                            setResponder({...responder, team:e.target.value})
-                        }}
-                        value={responder.team}
-                    />
+                    <span>
+                        {responder.team}
+                    </span>
                     <span style={{fontWeight:'600'}}>
                         Involved
                     </span>
-                    <input
-                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
-                        placeholder="Involved"
-                        onChange={(e)=>{
-                            setResponder({...responder, involved:e.target.value})
-                        }}
-                        value={responder.involved}
-                    />
-
+                    <span>
+                        {responder.involved}
+                    </span>
             </div>
 
             {/*  STATUS */}
@@ -298,37 +237,28 @@ const UpdateIncident = () => {
                     <span style={{fontWeight:'600'}}>
                         Time of arrival
                     </span>
-                    <input
-                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
-                        placeholder="Name"
-                        onChange={(e)=>{
-                            setStatus({...status, timeArrival:e.target.value})
-                        }}
-                        value={status.timeArrival}
-                    />
+                    <span>
+                        {status.timeArrival}
+                    </span>
+
                     <span style={{fontWeight:'600'}}>
                         Fire Out
                     </span>
-                    <input 
-                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
-                        placeholder="Name"
-                        onChange={(e)=>{
-                            setStatus({...status, fireOut:e.target.value})
-                        }}
-                        value={status.fireOut}
-                    />
+                    <span>
+                        {status.fireOut}
+                    </span>
                     <span style={{fontWeight:'600'}}>
                        Status
                     </span>
-                    {listFireStatus.length > 0 &&
-                     <SelectWithID
-                            options={listFireStatus}
-                            onChange={handleChangeStatus}
-                            value={status.status}
-                            loading={false}
-                            field={'status'}
-                        />
-                    }
+                     {listFireStatus?.length > 0 &&
+                   <SelectWithID
+                        options={listFireStatus}
+                        onChange={handleChangeStatus}
+                        value={status.status}
+                        loading={false}
+                        field={'status'}
+                   />
+                     }
 
             </div>
         </div>

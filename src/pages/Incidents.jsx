@@ -15,6 +15,8 @@ export default function Incidents() {
   const [district, setDistrict] = React.useState('select district');
   const [firestations, setFirestations] = React.useState([]);
   const [station, setStation] = React.useState('');
+  const [month, setMonth] = React.useState(new Date().getMonth() + 1);
+  const [year, setYear] = React.useState(new Date().getFullYear());
     
 
 
@@ -22,7 +24,7 @@ export default function Incidents() {
     const getIncidents = async () => {
       try {
         setLoading(true);
-        const response = await apiService.get('/reported-incidents?station='+station);
+        const response = await apiService.get('/reported-incidents?station='+station+'&month='+month+'&year='+year);
         setIncidents(response.data);
         setLoading(false);
       } catch (error) {
@@ -31,7 +33,7 @@ export default function Incidents() {
       }
     }
     getIncidents();
-  },[station])
+  },[station, month, year])
 
   useEffect(()=>{
     const handleGetFirestations = async () => {
@@ -90,6 +92,7 @@ export default function Incidents() {
         navigate('/update-incident?id='+id);
     }
 
+
   return (
     <div style={{height:'100%', overflow:'scroll', width:'100%'}}>
       <div>
@@ -114,7 +117,7 @@ export default function Incidents() {
                 </div>
                 
                 {firestations?.length > 0 &&
-                 <div style={{width:'60%'}}>
+                 <div style={{width:'50%'}}>
                    <Select
                     options={firestations.map((item) => item.address)}
                     onChange={(e) => setStation(e.target.value)}
@@ -122,8 +125,24 @@ export default function Incidents() {
                   />
                   </div>
                 }
+                  <input
+                    type="number"
+                    pattern="[1-9]"
+                    placeholder="Month"
+                    style={{width:'20%', marginLeft:'10px'}}
+                    onChange={(e)=>setMonth(e.target.value)}
+                    value={month}
+                  />
+                   <input
+                    type="number"
+                    pattern="[1-9]"
+                    placeholder="Year"
+                    style={{width:'20%', marginLeft:'10px'}}
+                    onChange={(e)=>setYear(e.target.value)}
+                    value={year}
+                  />
+                </div>
                 
-            </div>
         </div>
       </div>
     {loading && incidents.length === 0 ? 

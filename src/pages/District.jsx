@@ -3,6 +3,7 @@ import apiService from '../api'
 import Modal from '../component/Modal/Modal'
 import ReusableTable from '../component/ReusableTable/ReusableTable'
 
+
 const cols = [
     {
         header:'District',
@@ -72,7 +73,7 @@ const District = () => {
                 await apiService.post('/create-district', {name: add});
                 window.location.reload();
             } catch (error) {
-                console.log(error);
+                console.log(error.response.data);
             }
         }
         return (

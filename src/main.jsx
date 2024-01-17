@@ -19,6 +19,7 @@ import FireType from './pages/FireType';
 import FireStatus from './pages/FireStatus';
 import GlobalVariablesProvider from './GlobalState/GlobalVariables';
 import District from './pages/District';
+import DataVisualization from './pages/DataVisualization';
 
 const privateRoutes = createBrowserRouter([
   {
@@ -63,6 +64,10 @@ const privateRoutes = createBrowserRouter([
       {
         path: "/district",
         element:<District/>
+      },
+      {
+        path: "/data-visualization",
+        element: <DataVisualization/>
       }
     ],
   },
