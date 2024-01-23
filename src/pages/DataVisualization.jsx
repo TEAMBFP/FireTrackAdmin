@@ -8,8 +8,9 @@ import {
   Title,
   Tooltip,
   Legend,
+  BarElement
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import { Line, Bar } from 'react-chartjs-2';
 import apiService from "../api";
 
 ChartJS.register(
@@ -19,10 +20,11 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  BarElement
 );
 
-export const options = {
+ const options = {
   responsive: true,
   plugins: {
     legend: {
@@ -33,6 +35,14 @@ export const options = {
       text: 'Reported Incidents this year',
     },
   },
+scales: {
+        y: {
+          suggestedMin: 0,
+          ticks: {
+            precision: 0
+          }
+        }
+      }
 };
 
 const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July','August','September','October','November','December'];
@@ -112,7 +122,9 @@ const DataVisualization = () => {
 
   return (
     loading? <div>Loading...</div>:
-    <>
+    <div style={{height:'100%', overflow:'scroll'}}>
+    <h3>Reported Incidents</h3>
+    <div style={{marginLeft:'8px', marginBottom:'4px', fontWeight:'bold'}}>Year</div>
      <input
       type="number"
       pattern="[1-9]"
@@ -121,8 +133,15 @@ const DataVisualization = () => {
       onChange={(e)=>setYear(e.target.value)}
       value={year}
     />
-     <Line options={options} data={datasets} />
-    </>
+     <Bar 
+      options={options} 
+      data={datasets} 
+    />
+    <Line
+     options={options} 
+      data={datasets} 
+    />
+    </div>
   )
 }
 
