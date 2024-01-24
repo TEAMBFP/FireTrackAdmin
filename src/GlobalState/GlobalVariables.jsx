@@ -8,6 +8,7 @@ export const GlobalVariables = createContext({});
 
 
 const GlobalVariablesProvider = ({children}) => {
+    const token = localStorage.getItem('token');
     const [districts, setDistricts] = useState([]);
     const [fireStations, setFireStations] = useState([]);
     const [notifications, setNotification] = useState([]);
@@ -20,10 +21,13 @@ const GlobalVariablesProvider = ({children}) => {
                  if(stations?.data){
                     setFireStations(stations.data);
                 }
-                const notification = await apiService.get('/notifications');
-                if(notification?.data){
-                    setNotification(notification.data);
+                if(token){
+                    const notification = await apiService.get('/notifications');
+                    if(notification?.data){
+                        setNotification(notification.data);
+                    }
                 }
+                
                 const district = await apiService.get('/districts');
                 if(district?.data){
                     setDistricts(district.data);
@@ -33,7 +37,7 @@ const GlobalVariablesProvider = ({children}) => {
             }
         }
         fireVariables();
-    }, [])
+    }, [token])
 
      const fetchNotification = async () => {
             try {
@@ -47,11 +51,12 @@ const GlobalVariablesProvider = ({children}) => {
     }
 
     useEffect(() => {
+        if(!token) return;
       let pusher = new Pusher('70f162759bae135d542a', {
         cluster: 'ap1'
       });
 
-      const fetchNotification = async () => {
+        const fetchNotification = async () => {
             try {
                 const res = await apiService.get('/notifications');
                 if(res?.data){
@@ -60,7 +65,7 @@ const GlobalVariablesProvider = ({children}) => {
             } catch (error) {
                 console.log(error);
             }
-    }
+        }
 
     let channel = pusher.subscribe('my-channel');
       channel.bind('my-event', function(data) {
@@ -68,7 +73,7 @@ const GlobalVariablesProvider = ({children}) => {
         alert(JSON.stringify(data));
     });
 
-    }, []);
+    }, [token]);
     return (
         <GlobalVariables.Provider value={{
             districts,
