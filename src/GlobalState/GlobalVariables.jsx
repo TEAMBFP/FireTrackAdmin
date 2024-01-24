@@ -10,6 +10,7 @@ export const GlobalVariables = createContext({});
 const GlobalVariablesProvider = ({children}) => {
     const [districts, setDistricts] = useState([]);
     const [fireStations, setFireStations] = useState([]);
+    const [notifications, setNotification] = useState([]);
 
     useEffect(() => {
         const fetchDistricts = async () => {
@@ -34,17 +35,52 @@ const GlobalVariablesProvider = ({children}) => {
             }
         }
 
+        const fetchNotification = async () => {
+            try {
+                const res = await apiService.get('/notifications');
+                if(res?.data){
+                    setNotification(res.data);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        fetchNotification();
         fetchDistricts();
         fetchFireStations();
     },[])
+
+     const fetchNotification = async () => {
+            try {
+                const res = await apiService.get('/notifications');
+                if(res?.data){
+                    setNotification(res.data);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+    }
 
     useEffect(() => {
       let pusher = new Pusher('70f162759bae135d542a', {
         cluster: 'ap1'
       });
 
+      const fetchNotification = async () => {
+            try {
+                const res = await apiService.get('/notifications');
+                if(res?.data){
+                    setNotification(res.data);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+    }
+
     let channel = pusher.subscribe('my-channel');
       channel.bind('my-event', function(data) {
+       fetchNotification();
         alert(JSON.stringify(data));
     });
 
@@ -52,7 +88,9 @@ const GlobalVariablesProvider = ({children}) => {
     return (
         <GlobalVariables.Provider value={{
             districts,
-            fireStations
+            fireStations,
+            notifications,
+            fetchNotification
         }}>
             {children}
         </GlobalVariables.Provider>

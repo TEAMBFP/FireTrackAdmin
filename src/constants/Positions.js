@@ -20,3 +20,12 @@ export const  positions = [
     'REGIONAL PUBLIC INFORMATION UNIT',
     'R10 C, FCOS'
 ]
+
+
+
+export const userType = [
+    'REGIONAL DIRECTOR',
+    'DISTRICT DIRECTOR',
+    'FIRE DIRECTOR',
+    'ADMIN',
+]

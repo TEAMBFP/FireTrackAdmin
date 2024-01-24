@@ -412,3 +412,7 @@ img.small {
   justify-content: center;
   width: 100%;
 }
+
+select:disabled {
+  background: #dddddd;
+}

@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 import apiService from "../api";
 import logo from '/1.png?url'
 import { useNavigate } from 'react-router-dom';
+import NotificationPanel from "../component/Notification/NotificationPanel";
 export default function SideBar() {
   const navigate = useNavigate();
   const [isSidebarOpen, setSidebarOpen] = React.useState(true);
@@ -87,6 +88,9 @@ export default function SideBar() {
         </div>
       </div>
       <div id="detail">
+        <div style={{display:'flex', justifyContent:'end'}}>
+          <NotificationPanel/>
+        </div>
         <Outlet />
       </div>
     </>

@@ -1,7 +1,7 @@
 import  { useState, useContext } from 'react';
 import apiService from '../api';
 import Select from '../component/Select';
-import { positions } from '../constants/Positions';
+import { userType } from '../constants/Positions';
 import SelectWithId from '../component/SelectWithId';
 import { GlobalVariables } from '../GlobalState/GlobalVariables';
 
@@ -72,7 +72,12 @@ const Register = () => {
                 <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Register</h2>
                 <div style={{ marginBottom: '10px' }}>
                     <label> Fullname:</label>
-                    <input  value={name} onChange={handleNameChange} style={{ width: '100%', padding: '5px', border:'1px solid gray' }} />
+                    <input  
+                        value={name} 
+                        onChange={handleNameChange} 
+                        style={{ width: '100%', padding: '5px', border:'1px solid gray' }} 
+                        required
+                    />
                 </div>
                 <div style={{ marginBottom: '10px', display:'flex', justifyContent:'space-between' }}>
                     <div style={{width:'47%'}}>
@@ -82,6 +87,7 @@ const Register = () => {
                                 setAdditionalDetails({...additional_details, phone_no:e.target.value})
                             } 
                             style={{ width: '100%', padding: '5px', border:'1px solid gray' }} 
+                            required
                         />
                     </div>
                     <div style={{width:'47%'}}>
@@ -92,6 +98,7 @@ const Register = () => {
                             } 
                             style={{ width: '100%', padding: '5px', border:'1px solid gray' }} 
                             type="date"
+                            required
                         />
                     </div>
                 </div>
@@ -103,12 +110,13 @@ const Register = () => {
                                 setAdditionalDetails({...additional_details, address:e.target.value})
                             } 
                             style={{ width: '100%', padding: '5px', border:'1px solid gray' }} 
+                            required
                         />
                     </div>
                     <div style={{width:'47%'}}>
                         <label >Gender</label>
                         <Select
-                            options={['Select gender', 'male', 'female']}
+                            options={['', 'male', 'female']}
                             onChange={(e)=>
                                 setAdditionalDetails({...additional_details, gender:e.target.value})
                             }
@@ -123,7 +131,7 @@ const Register = () => {
                         style={{ width: '100%', padding: '5px', border:'1px solid gray' }} 
                     /> */}
                     <Select
-                        options={['Select position',...positions]} 
+                        options={['',...userType]} 
                         fontSize={'0.75rem'}
                         onChange={(e)=>
                             setAdditionalDetails({...additional_details, position:e.target.value})
@@ -136,40 +144,64 @@ const Register = () => {
                             <label >District</label>
                             <SelectWithId 
                                 options={[
-                                    {id:0, name:'Select district'}
+                                    {id:'', name:''}
                                     ,...districts]}
                                 field={'name'}
                                 value={additional_details.district_id}
                                 onChange={(e)=>
                                     setAdditionalDetails({...additional_details, district_id:e.target.value})
                                 }
+                                required={true}
+                                disabled={additional_details.position === 'REGIONAL DIRECTOR'}
                             />
                         </div>
                         <div style={{width:'47%'}}>
                             <label >Firestation</label>
                             <SelectWithId
                                 options={[
-                                    {id:0, address:'Select firestation'}
+                                    {id:'', address:''}
                                     ,...fireStations]}
                                 field={'address'}
                                 value={additional_details.firestation_id}
                                 onChange={(e)=>
                                     setAdditionalDetails({...additional_details, firestation_id:e.target.value})
                                 }
+                                required={true}
+                                disabled={additional_details.position === 'REGIONAL DIRECTOR' || additional_details.position === 'DISTRICT DIRECTOR'}
                             />
                         </div>
                 </div>
                 <div style={{ marginBottom: '10px' }}>
                     <label htmlFor="email">Email:</label>
-                    <input type="email" id="email" value={email} onChange={handleEmailChange} style={{ width: '100%', padding: '5px', border:'1px solid gray' }} />
+                    <input 
+                        type="email" 
+                        id="email" 
+                        value={email} 
+                        onChange={handleEmailChange} 
+                        style={{ width: '100%', padding: '5px', border:'1px solid gray' }} 
+                        required
+                    />
                 </div>
                 <div style={{ marginBottom: '10px' }}>
                     <label htmlFor="password">Password:</label>
-                    <input type="password" id="password" value={password} onChange={handlePasswordChange} style={{ width: '100%', padding: '5px', border:'1px solid gray' }} />
+                    <input type="password" 
+                        id="password" 
+                        value={password} 
+                        onChange={handlePasswordChange} 
+                        style={{ width: '100%', padding: '5px', border:'1px solid gray' }} 
+                        required
+                    />
                 </div>
                  <div style={{ marginBottom: '10px' }}>
                     <label htmlFor="password">Confirm Password:</label>
-                    <input type="password" id="password" value={confirm_password} onChange={handleConfirmPasswordChange} style={{ width: '100%', padding: '5px', border:'1px solid gray' }} />
+                    <input 
+                        type="password" 
+                        id="password" 
+                        value={confirm_password} 
+                        onChange={handleConfirmPasswordChange} 
+                        style={{ width: '100%', padding: '5px', border:'1px solid gray' }} 
+                        required
+                    />
                 </div>
                 <div>
                     {error && <p style={{ color: 'red', fontSize:'0.80rem' }}>{error}</p>}
