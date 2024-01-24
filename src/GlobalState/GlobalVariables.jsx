@@ -13,43 +13,27 @@ const GlobalVariablesProvider = ({children}) => {
     const [notifications, setNotification] = useState([]);
 
     useEffect(() => {
-        const fetchDistricts = async () => {
+
+        const fireVariables = async () => {
             try {
-                const res = await apiService.get('/districts');
-                if(res?.data){
-                    setDistricts(res.data);
+                const stations = await apiService.get('/firestations');
+                 if(stations?.data){
+                    setFireStations(stations.data);
+                }
+                const notification = await apiService.get('/notifications');
+                if(notification?.data){
+                    setNotification(notification.data);
+                }
+                const district = await apiService.get('/districts');
+                if(district?.data){
+                    setDistricts(district.data);
                 }
             } catch (error) {
                 console.log(error);
             }
         }
-
-        const fetchFireStations = async () => {
-            try {
-                const res = await apiService.get('/firestations');
-                if(res?.data){
-                    setFireStations(res.data);
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        const fetchNotification = async () => {
-            try {
-                const res = await apiService.get('/notifications');
-                if(res?.data){
-                    setNotification(res.data);
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        fetchNotification();
-        fetchDistricts();
-        fetchFireStations();
-    },[])
+        fireVariables();
+    }, [])
 
      const fetchNotification = async () => {
             try {
