@@ -23,9 +23,3 @@ export const  positions = [
 
 
 
-export const userType = [
-    'REGIONAL DIRECTOR',
-    'DISTRICT DIRECTOR',
-    'FIRE DIRECTOR',
-    'ADMIN',
-]

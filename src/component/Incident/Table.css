@@ -6,6 +6,7 @@
 .table {
   width: 100%;
   border-collapse: collapse; /* Removes the double borders */
+  
 }
 
 .table th,
@@ -17,6 +18,7 @@
 
 .table th {
   background-color: orange; /* Gives the header a nice green color */
+  position: sticky; /* Make it stick, even on scroll */
   color: white; /* Makes the header text white */
 }
 

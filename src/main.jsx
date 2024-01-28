@@ -20,6 +20,9 @@ import FireStatus from './pages/FireStatus';
 import GlobalVariablesProvider from './GlobalState/GlobalVariables';
 import District from './pages/District';
 import DataVisualization from './pages/DataVisualization';
+import RegisterAdditionalInfo from './pages/RegisterAdditionalInfo';
+import Employees from './pages/Employees';
+import UserTypes from './pages/UserTypes';
 
 const privateRoutes = createBrowserRouter([
   {
@@ -53,7 +56,7 @@ const privateRoutes = createBrowserRouter([
         path:'/stations',
         element: <Firestations/>
       },
-       {
+      {
         path:'/fire-type',
         element: <FireType/>
       },
@@ -68,6 +71,14 @@ const privateRoutes = createBrowserRouter([
       {
         path: "/data-visualization",
         element: <DataVisualization/>
+      },
+      {
+        path: "/employees",
+        element:<Employees/>
+      },
+      {
+        path: '/user-types',
+        element: <UserTypes/>
       }
     ],
   },
@@ -83,6 +94,11 @@ const publicRoute = createBrowserRouter([
   {
     path: "/register",
     element: <Register/>,
+    errorElement:<ErrorPage/>,
+  },
+  {
+    path: '/register/additional_info',
+    element:<RegisterAdditionalInfo/>,
     errorElement:<ErrorPage/>,
   }
   

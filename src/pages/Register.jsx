@@ -1,31 +1,21 @@
-import  { useState, useContext } from 'react';
+import  { useState } from 'react';
 import apiService from '../api';
 import Select from '../component/Select';
-import { userType } from '../constants/Positions';
-import SelectWithId from '../component/SelectWithId';
-import { GlobalVariables } from '../GlobalState/GlobalVariables';
 
 const Register = () => {
-    const {fireStations, districts} = useContext(GlobalVariables);
-    const [name, setName] = useState('');
+    const [name, setName] = useState({firstname:'', lastname:''});
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirm_password, setConfirmPassword] = useState('');
     const [error, setError] = useState(null);
+    const [message, setMessage] = useState(null); 
     const [loading, setLoading] = useState(false);
     const [additional_details, setAdditionalDetails] = useState({
         phone_no:'',
         birthday:'',
-        position:'',
         address:'',
         gender:'',
-        district_id:'',
-        firestation_id:''
     });
-
-    const handleNameChange = (e) => {
-        setName(e.target.value);
-    };
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
@@ -42,21 +32,19 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const payload = { 
-                name, 
+                ...name, 
                 email, 
                 password, 
-                password_confirmation:confirm_password, 
-                user_type:'admin',
-                info:additional_details
-
+                password_confirmation:confirm_password,
+                info: additional_details
         };
         try {
             setLoading(true)
             const res = await apiService.post('/admin-register', payload );
             if(res?.data){
-                localStorage.setItem('token', res.data.token);
                 localStorage.setItem('user', JSON.stringify(res.data.user));
-                window.location.href = '/';
+                setMessage('We have sent you an email to verify your account. Please check your email.')
+              
             }
             setLoading(false);
         } catch (error) {
@@ -70,14 +58,25 @@ const Register = () => {
             <div>
             <form style={{  padding: '20px 50px 20px 50px', border: '1px solid #ccc', borderRadius: '5px' }} onSubmit={handleSubmit}>
                 <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Register</h2>
-                <div style={{ marginBottom: '10px' }}>
-                    <label> Fullname:</label>
-                    <input  
-                        value={name} 
-                        onChange={handleNameChange} 
-                        style={{ width: '100%', padding: '5px', border:'1px solid gray' }} 
-                        required
-                    />
+                 <div style={{ marginBottom: '10px', display:'flex', justifyContent:'space-between' }}>
+                    <div style={{width:'47%'}}>
+                        <label> First Name:</label>
+                        <input  
+                            value={name.firstname} 
+                            onChange={(e)=>setName({...name, firstname:e.target.value})}
+                            style={{ width: '100%', padding: '5px', border:'1px solid gray' }} 
+                            required
+                        />
+                    </div>
+                     <div style={{width:'47%'}}>
+                        <label> Last name:</label>
+                        <input  
+                            value={name.lastname} 
+                            onChange={(e)=>setName({...name, lastname:e.target.value})} 
+                            style={{ width: '100%', padding: '5px', border:'1px solid gray' }} 
+                            required
+                        />
+                    </div>
                 </div>
                 <div style={{ marginBottom: '10px', display:'flex', justifyContent:'space-between' }}>
                     <div style={{width:'47%'}}>
@@ -125,53 +124,6 @@ const Register = () => {
                     </div>
                 </div>
                 <div style={{ marginBottom: '10px' }}>
-                    <label >Position:</label>
-                    {/* <input 
-                        onChange={(e)=>setAdditionalDetails({...additional_details, position:e.target.value})} 
-                        style={{ width: '100%', padding: '5px', border:'1px solid gray' }} 
-                    /> */}
-                    <Select
-                        options={['',...userType]} 
-                        fontSize={'0.75rem'}
-                        onChange={(e)=>
-                            setAdditionalDetails({...additional_details, position:e.target.value})
-                        }
-                        value={additional_details.position}
-                    />
-                </div>
-                <div style={{ marginBottom: '10px', display:'flex', justifyContent:'space-between' }}>
-                        <div style={{width:'47%'}}>
-                            <label >District</label>
-                            <SelectWithId 
-                                options={[
-                                    {id:'', name:''}
-                                    ,...districts]}
-                                field={'name'}
-                                value={additional_details.district_id}
-                                onChange={(e)=>
-                                    setAdditionalDetails({...additional_details, district_id:e.target.value})
-                                }
-                                required={true}
-                                disabled={additional_details.position === 'REGIONAL DIRECTOR'}
-                            />
-                        </div>
-                        <div style={{width:'47%'}}>
-                            <label >Firestation</label>
-                            <SelectWithId
-                                options={[
-                                    {id:'', address:''}
-                                    ,...fireStations]}
-                                field={'address'}
-                                value={additional_details.firestation_id}
-                                onChange={(e)=>
-                                    setAdditionalDetails({...additional_details, firestation_id:e.target.value})
-                                }
-                                required={true}
-                                disabled={additional_details.position === 'REGIONAL DIRECTOR' || additional_details.position === 'DISTRICT DIRECTOR'}
-                            />
-                        </div>
-                </div>
-                <div style={{ marginBottom: '10px' }}>
                     <label htmlFor="email">Email:</label>
                     <input 
                         type="email" 
@@ -205,6 +157,9 @@ const Register = () => {
                 </div>
                 <div>
                     {error && <p style={{ color: 'red', fontSize:'0.80rem' }}>{error}</p>}
+                </div>
+                <div>
+                    {message && <p style={{ color: 'green', fontSize:'0.80rem' }}>{message}</p>}
                 </div>
                 <button 
                     type="submit" 

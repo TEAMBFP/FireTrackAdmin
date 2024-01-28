@@ -14,6 +14,7 @@ const cols = [
         ]
 
 const Firestations = () => {
+    const user = JSON.parse(localStorage.getItem('user'));
     const [firestations, setFirestations] = React.useState([]);
     const [isOpenUpdate, setIsOpenUpdate] = React.useState(false);
     const [isOpenAdd, setIsOpenAdd] = React.useState(false);
@@ -191,7 +192,7 @@ const Firestations = () => {
   return (
     <div style={{overflow:'scroll', height:'100%'}}>
         <p style={{color:'orange', fontWeight:'bold', fontSize:'28px'}}>
-              Incidents Managements
+              Fire stations
           </p>
         <Modal
             open={isOpenAdd}
@@ -216,15 +217,18 @@ const Firestations = () => {
                 />
             </div>
             <div>
+            {user.user_type_id === '5' &&
             <button onClick={()=>setIsOpenAdd(true)}>
                 Add
             </button>
+            }
             </div>
         </div>
         <ReusableTable
             data={firestations}
             header={cols}
             onClick={(e) => {
+                if(user.user_type_id === '5')
                 setIsOpenUpdate(true)
                 setEdit(e)
             }}

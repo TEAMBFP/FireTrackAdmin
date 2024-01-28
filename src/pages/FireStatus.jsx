@@ -17,6 +17,7 @@ const cols = [
 
 
 const FireStatus = () => {
+    const user = JSON.parse(localStorage.getItem('user'));
     const [fireStatus, setFireStatus] = React.useState([]);
     const [isOpenUpdate, setIsOpenUpdate] = React.useState(false);
     const [isOpenAdd, setIsOpenAdd] = React.useState(false);
@@ -118,14 +119,17 @@ const FireStatus = () => {
             Title='Update Fire Status'
         />
         <div style={{display:'flex', justifyContent:'end', marginBottom:'10px'}}>
+            
+           {user.user_type_id === '5'&& 
             <button onClick={()=>setIsOpenAdd(true)}>
                 Add
-            </button>
+            </button>}
         </div>
         <ReusableTable
             data={fireStatus}
             header={cols}
             onClick={(e) => {
+                if(user.user_type_id === '5')
                 setIsOpenUpdate(true)
                 setEdit(e)
             }}

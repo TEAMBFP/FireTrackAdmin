@@ -12,6 +12,7 @@ const GlobalVariablesProvider = ({children}) => {
     const [districts, setDistricts] = useState([]);
     const [fireStations, setFireStations] = useState([]);
     const [notifications, setNotification] = useState([]);
+    const [userTypes, setUserTypes] = useState([]);
 
     useEffect(() => {
 
@@ -31,6 +32,12 @@ const GlobalVariablesProvider = ({children}) => {
                 const district = await apiService.get('/districts');
                 if(district?.data){
                     setDistricts(district.data);
+                }
+
+                const position = await apiService.get('/user-types');
+                if(position?.data){
+                    const filtered = position.data.filter((item) => item.name !== 'User');
+                    setUserTypes(filtered);
                 }
             } catch (error) {
                 console.log(error);
@@ -79,7 +86,8 @@ const GlobalVariablesProvider = ({children}) => {
             districts,
             fireStations,
             notifications,
-            fetchNotification
+            fetchNotification,
+            userTypes,
         }}>
             {children}
         </GlobalVariables.Provider>

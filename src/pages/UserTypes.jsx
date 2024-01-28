@@ -5,13 +5,12 @@ import Modal from '../component/Modal/Modal';
 import Select from '../component/Select';
 
 const cols = [
-    {header: 'Type of Occupancy', field:'name' },
-    {header: 'Type', field: 'type'},
-    {header: 'Action', field: 'action'}
+    {header: 'User type', field:'name' },
+    {header: 'Action', field: 'action'},
 ]
-const FireType = () => {
+const UserTypes = () => {
     const user = JSON.parse(localStorage.getItem('user'));
-    const [fireType, setFireType] = React.useState([]);
+    const [userType, setUserType] = React.useState([]);
     const [isOpenUpdate, setIsOpenUpdate] = React.useState(false);
     const [isOpenAdd, setIsOpenAdd] = React.useState(false);
     const [edit, setEdit] = React.useState('');
@@ -19,9 +18,9 @@ const FireType = () => {
     useEffect(() => {
         const handleGetTypes = async () => {
             try {
-                const response = await apiService.get('/fire-types');
+                const response = await apiService.get('/user-types');
                 console.log(response.data);
-                setFireType(response.data);
+                setUserType(response.data);
             } catch (error) {
                 console.log(error);
             }
@@ -34,7 +33,7 @@ const FireType = () => {
     const ModalUpdateContent = () => {
         const handleUpdate = async () => {
             try {
-                await apiService.post('/update-fire-type', {id: edit.id, name: edit.name, type: edit.type});
+                await apiService.post('/update-user-type', {id: edit.id, name: edit.name, type: edit.type});
                 window.location.reload();
             } catch (error) {
                 console.log(error);
@@ -48,12 +47,6 @@ const FireType = () => {
                     placeholder="Name"
                     value={edit.name}
                     onChange={(e) => setEdit({...edit, name: e.target.value})}
-                />
-
-                <Select
-                    options={[ 'Select type','Structural', 'Non-Structural', 'Vehicular']}
-                    onChange={(e) => setEdit({...edit, type: e.target.value})}
-                    value={edit.type}
                 />
             
                 <button style={{marginRight:'10px', marginTop:'10px'}} onClick={() => setIsOpenUpdate(false)}>
@@ -70,7 +63,7 @@ const FireType = () => {
     const ModalAddContent = () => {
         const handleAdd = async () => {
             try {
-                await apiService.post('/create-fire-type', {name: add.name, type: add.type});
+                await apiService.post('/create-user-type', {name: add.name, type: add.type});
                 window.location.reload();
             } catch (error) {
                 console.log(error);
@@ -84,11 +77,6 @@ const FireType = () => {
                     placeholder="Name"
                     value={add.name}
                     onChange={(e) => setAdd({...add, name: e.target.value})}
-                />
-
-                <Select
-                    options={[ 'Select type','Structural', 'Non-Structural', 'Vehicular']}
-                    onChange={(e) => setAdd({...add, type: e.target.value})}
                 />
             
                 <button style={{marginRight:'10px', marginTop:'10px'}} onClick={() => setIsOpenAdd(false)}>
@@ -104,7 +92,7 @@ const FireType = () => {
 
      const handleDelete = async (id) => {
         try {
-            await apiService.post('/delete-fire-type', {id});
+            await apiService.post('/delete-user-type', {id});
             window.location.reload();
         } catch (error) {
             console.log(error);
@@ -116,12 +104,12 @@ const FireType = () => {
         <Modal
             open={isOpenAdd}
             Content={ModalAddContent}
-            Title='Add Fire Type'
+            Title='Add User Type'
         />
          <Modal
             open={isOpenUpdate}
             Content={ModalUpdateContent}
-            Title='Update Fire Type'
+            Title='Update User Type'
         />
         <div style={{display:'flex', justifyContent:'end', marginBottom:'10px'}}>
             {user.user_type_id === '5' &&
@@ -131,7 +119,7 @@ const FireType = () => {
             }
         </div>
         <ReusableTable
-            data={fireType}
+            data={userType}
             header={cols}
             onClick={(e) => {
                 if(user.user_type_id === '5')
@@ -144,4 +132,4 @@ const FireType = () => {
   )
 }
 
-export default FireType
+export default UserTypes

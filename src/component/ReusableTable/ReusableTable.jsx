@@ -3,14 +3,16 @@ import React from 'react';
 import './styles.css';
 
 
-const ReusableTable = ({data, header, onClick, handleDelete}) => {
+const ReusableTable = ({data, header, onClick, handleDelete, empTable}) => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    
     return (
-        <div className="table-container">
+        <div className="table-container" style={{height:'75%'}}>
             <table className="table">
                 <thead>
                     <tr>
                         {header.map((item, index) => (
-                            <th key={index}>{item.header}</th>
+                            <th key={index} style={{position:'sticky', top:0, overflow:'hidden'}}>{item.header}</th>
                         ))}
                     </tr>
                 </thead>
@@ -24,7 +26,7 @@ const ReusableTable = ({data, header, onClick, handleDelete}) => {
                                 field.field === 'image'?
                                 <img src={item[field.field]} style={{width:'100px', height:'100px'}} key={key}/>
                                 :
-                                field.field === 'action'?
+                                (field.field === 'action' && parseInt(user.user_type_id) === 5)||(field.field === 'action'&& empTable) ? 
                                 <td key={key}> 
                                     <button onClick={()=>handleDelete(item.id)}>
                                         Delete
