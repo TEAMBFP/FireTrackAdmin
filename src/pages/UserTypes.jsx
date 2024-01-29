@@ -5,6 +5,7 @@ import Modal from '../component/Modal/Modal';
 import Select from '../component/Select';
 
 const cols = [
+    {header: 'User ID', field:'id' },
     {header: 'User type', field:'name' },
     {header: 'Action', field: 'action'},
 ]

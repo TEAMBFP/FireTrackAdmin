@@ -23,6 +23,7 @@ import DataVisualization from './pages/DataVisualization';
 import RegisterAdditionalInfo from './pages/RegisterAdditionalInfo';
 import Employees from './pages/Employees';
 import UserTypes from './pages/UserTypes';
+import ForgotPasswordForm from './pages/ForgotPasswordForm';
 
 const privateRoutes = createBrowserRouter([
   {
@@ -100,6 +101,10 @@ const publicRoute = createBrowserRouter([
     path: '/register/additional_info',
     element:<RegisterAdditionalInfo/>,
     errorElement:<ErrorPage/>,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPasswordForm/>
   }
   
 ]);

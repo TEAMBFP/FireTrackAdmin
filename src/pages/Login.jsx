@@ -1,7 +1,9 @@
 import  { useState } from 'react';
 import apiService from '../api';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
@@ -23,9 +25,15 @@ const Login = () => {
             const res = await apiService.post('/admin-login', { email, password },{
             'Accept': 'application/json',
             })
-            localStorage.setItem('token', res.data.token);
+
+            localStorage.setItem('token', res?.data?.token);
             localStorage.setItem('user', JSON.stringify(res.data.user));
-            window.location.href = '/';
+            if(!res?.data?.token){
+                console.log('no token');
+                navigate('/register/additional_info');
+            }
+           
+            // window.location.href = '/';
              setLoading(false);
         } catch (error) {
             setError(error.response.data.message);
@@ -58,6 +66,9 @@ const Login = () => {
                 </button>
                 <div>
                     <p style={{ textAlign: 'center' }}>Don&apos;t have an account? <a href="/register">Register</a></p>
+                </div>
+                 <div>
+                    <p style={{ textAlign: 'center' }}> <a href="/forgot-password">Forgot password?</a></p>
                 </div>
             </form>
             </div>
