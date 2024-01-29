@@ -217,7 +217,7 @@ const Firestations = () => {
                 />
             </div>
             <div>
-            {user.user_type_id === '5' &&
+            {parseInt(user.user_type_id) === 5 &&
             <button onClick={()=>setIsOpenAdd(true)}>
                 Add
             </button>
@@ -228,7 +228,7 @@ const Firestations = () => {
             data={firestations}
             header={cols}
             onClick={(e) => {
-                if(user.user_type_id === '5')
+                if(parseInt(user.user_type_id) === 5)
                 setIsOpenUpdate(true)
                 setEdit(e)
             }}

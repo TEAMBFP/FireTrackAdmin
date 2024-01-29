@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import apiService from '../api'
+import { GlobalVariables } from '../GlobalState/GlobalVariables';
 
 const AccounInfo = () => {
+  const {userTypes} = useContext(GlobalVariables);
   const user = localStorage.getItem('user')
   let imageRef = React.useRef(null);
   const [data,setData] = React.useState()
@@ -49,7 +51,8 @@ const AccounInfo = () => {
         console.log(error);
       }
   }
-  console.log(data?.info);
+
+  console.log(user);
   return (
     <div style={{padding:'20px'}}>
         <div style={{display:'flex',justifyContent:'space-between'}}>
@@ -95,15 +98,24 @@ const AccounInfo = () => {
                   onChange={(e)=>{
                       setData({...data, info:{...data.info, position:e.target.value}})
                   }}
-                 value={data?.info?.position}
+                 value={userTypes.filter((item)=>item.id === data?.user_type_id)[0]?.name}
+                 readOnly
                 />
-            <span>Name</span>
+            <span>First name</span>
              <input 
                   style={{height:'32px', width:'100%', fontSize:'16px'}}
                   onChange={(e)=>{
-                      setData({...data, name:e.target.value})
+                      setData({...data, firstname:e.target.value})
                   }}
-                  value={data?.name}
+                  value={data?.firstname}
+                />
+            <span>Last name</span>
+             <input 
+                  style={{height:'32px', width:'100%', fontSize:'16px'}}
+                  onChange={(e)=>{
+                      setData({...data, lastname:e.target.value})
+                  }}
+                  value={data?.lastname}
                 />
         </div>
     </div>

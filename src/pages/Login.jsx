@@ -31,9 +31,11 @@ const Login = () => {
             if(!res?.data?.token){
                 console.log('no token');
                 navigate('/register/additional_info');
+            }else{
+                window.location.href = '/';
             }
            
-            // window.location.href = '/';
+            
              setLoading(false);
         } catch (error) {
             setError(error.response.data.message);

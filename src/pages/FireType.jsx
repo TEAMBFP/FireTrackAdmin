@@ -221,7 +221,7 @@ const FireType = () => {
             Title='Update Fire Occupancy'
         />
         <div style={{display:'flex', justifyContent:'end', marginBottom:'10px'}}>
-            {user.user_type_id === '5' &&
+            {parseInt(user.user_type_id) === 5 &&
             <button onClick={()=>setIsOpenAddFireType(true)}>
                 Add
             </button>
@@ -231,14 +231,14 @@ const FireType = () => {
             data={fireType}
             header={fireTypeCols}
             onClick={(e) => {
-                if(user.user_type_id === '5')
+                if(parseInt(user.user_type_id) === 5)
                 setIsOpenUpdateFireType(true)
                 setEditFireType(e)
             }}
             handleDelete={(id)=>handleDelete(id)}
         />
         <div style={{display:'flex', justifyContent:'end', marginBottom:'10px'}}>
-            {user.user_type_id === '5' &&
+            {parseInt(user.user_type_id) === 5 &&
             <button onClick={()=>setIsOpenAddOccupancy(true)}>
                 Add
             </button>
@@ -248,9 +248,8 @@ const FireType = () => {
             data={occupancy}
             header={occupancyCols}
             onClick={(e) => {
-                if(user.user_type_id === '5')
+                if(parseInt(user.user_type_id) === 5)
                 setOpenUpdateOccupancy(true)
-                console.log(e);
                 setEditOccupancy(e)
             }}
             handleDelete={(id)=>handleDeleteOccupancy(id)}

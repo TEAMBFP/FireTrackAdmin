@@ -120,7 +120,7 @@ const FireStatus = () => {
         />
         <div style={{display:'flex', justifyContent:'end', marginBottom:'10px'}}>
             
-           {user.user_type_id === '5'&& 
+           {parseInt(user.user_type_id) === 5&& 
             <button onClick={()=>setIsOpenAdd(true)}>
                 Add
             </button>}
@@ -129,7 +129,7 @@ const FireStatus = () => {
             data={fireStatus}
             header={cols}
             onClick={(e) => {
-                if(user.user_type_id === '5')
+                if(parseInt(user.user_type_id) === 5)
                 setIsOpenUpdate(true)
                 setEdit(e)
             }}

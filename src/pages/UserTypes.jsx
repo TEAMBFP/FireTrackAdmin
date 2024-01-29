@@ -5,8 +5,8 @@ import Modal from '../component/Modal/Modal';
 import Select from '../component/Select';
 
 const cols = [
-    {header: 'User ID', field:'id' },
-    {header: 'User type', field:'name' },
+    {header: 'Position ID', field:'id' },
+    {header: 'Position', field:'name' },
     {header: 'Action', field: 'action'},
 ]
 const UserTypes = () => {
@@ -105,15 +105,15 @@ const UserTypes = () => {
         <Modal
             open={isOpenAdd}
             Content={ModalAddContent}
-            Title='Add User Type'
+            Title='Add Position'
         />
          <Modal
             open={isOpenUpdate}
             Content={ModalUpdateContent}
-            Title='Update User Type'
+            Title='Update Position'
         />
         <div style={{display:'flex', justifyContent:'end', marginBottom:'10px'}}>
-            {user.user_type_id === '5' &&
+            {parseInt(user.user_type_id) === 5 &&
             <button onClick={()=>setIsOpenAdd(true)}>
                 Add
             </button>
@@ -123,7 +123,7 @@ const UserTypes = () => {
             data={userType}
             header={cols}
             onClick={(e) => {
-                if(user.user_type_id === '5')
+                if(parseInt(user.user_type_id) === 5)
                 setIsOpenUpdate(true)
                 setEdit(e)
             }}
