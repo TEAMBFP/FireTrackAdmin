@@ -24,6 +24,8 @@ import RegisterAdditionalInfo from './pages/RegisterAdditionalInfo';
 import Employees from './pages/Employees';
 import UserTypes from './pages/UserTypes';
 import ForgotPasswordForm from './pages/ForgotPasswordForm';
+import Region from './pages/Region';
+import Barangay from './pages/Barangay';
 
 const privateRoutes = createBrowserRouter([
   {
@@ -80,6 +82,14 @@ const privateRoutes = createBrowserRouter([
       {
         path: '/user-types',
         element: <UserTypes/>
+      },
+      {
+        path: '/region',
+        element: <Region/>
+      },
+      {
+        path: '/barangay',
+        element: <Barangay/>
       }
     ],
   },

@@ -2,46 +2,55 @@ import React, { useEffect } from 'react'
 import apiService from '../api'
 import ReusableTable from '../component/ReusableTable/ReusableTable'
 import Modal from '../component/Modal/Modal'
-import Select from '../component/Select'
+import { GlobalVariables } from '../GlobalState/GlobalVariables'
+import SelectWithID from '../component/SelectWithID'
 
 const cols = [
-          {header: 'Address', field:'address' },
-          {header: 'District', field:'district' },
-          {header: 'Latitude', field: 'latitude'}, 
-          {header: 'Longitude', field: 'longitude'}, 
-          {header: 'Contact number', field: 'number'}, 
-          {header: 'Action', field: 'action'}
-        ]
+    {header: 'ID', field: 'id'},
+    {header: 'Name', field: 'name'},
+    {header: 'Address', field:'address' },
+    {header: 'District', field:'district_name' },
+    {header: 'Latitude', field: 'latitude'}, 
+    {header: 'Longitude', field: 'longitude'}, 
+    {header: 'Contact number', field: 'number'}, 
+    {header: 'Action', field: 'action'}
+]
 
 const Firestations = () => {
+    const { districts, region } = React.useContext(GlobalVariables);
     const user = JSON.parse(localStorage.getItem('user'));
     const [firestations, setFirestations] = React.useState([]);
     const [isOpenUpdate, setIsOpenUpdate] = React.useState(false);
     const [isOpenAdd, setIsOpenAdd] = React.useState(false);
     const [edit, setEdit] = React.useState({
+        name:'',
         id:'',
         address:'',
         latitude:'',
         longitude:'',
         number:'',
-        district:''
+        district_id:''
     
     });
     const [add, setAdd] = React.useState({
+        name:'',
         address:'', 
         latitude:'', 
         longitude:'', 
         number:'',
-        district:'Cagayan de oro'
+        district_id:''
     });
 
-    const [filter, setFilter] = React.useState('');
+    const [filter, setFilter] = React.useState({
+        district_id:'',
+        region_id:''
+    });
 
     useEffect(() => {
         const handleGetFirestations = async () => {
             try {
               
-                const response = await apiService.get('/firestations?district='+filter);
+                const response = await apiService.get('/firestations?district_id='+filter.district_id+'&region_id='+filter.region_id);
                 setFirestations(response.data);
             } catch (error) {
                 console.log(error);
@@ -54,14 +63,7 @@ const Firestations = () => {
     const ModalUpdateContent = () => {
         const handleUpdate = async () => {
             try {
-                await apiService.post('/update-firestation', {
-                    id: edit.id, 
-                    address: edit.address, 
-                    latitude: edit.latitude, 
-                    longitude: edit.longitude, 
-                    number: edit.number,
-                    district: edit.district
-                });
+                await apiService.post('/update-firestation', edit);
                 window.location.reload();
             } catch (error) {
                 console.log(error);
@@ -71,16 +73,22 @@ const Firestations = () => {
               <div>
                 <input
                     type="text"
+                    placeholder="Name"
+                    value={edit.name}
+                    onChange={(e) => setEdit({...edit, name: e.target.value})}
+                />
+                <input
+                    type="text"
                     placeholder="Address"
                     value={edit.address}
                     onChange={(e) => setEdit({...edit, address: e.target.value})}
                 />
 
-                 <Select
-                    options={[ 'Cagayan de Oro','Misamis Oriental', 'Misamis Occidental', 
-                        'Bukidnon', 'Camiguin', 'Lanao', 'Iligan']}
-                    onChange={(e) => setEdit({...edit, district: e.target.value})}
-                    value={edit.district}
+                 <SelectWithID
+                    options={districts}
+                    onChange={(e) => setEdit({...edit, district_id: e.target.value})}
+                    value={edit.district_id}
+                    field={'name'}
                 />
 
                 <input
@@ -99,7 +107,7 @@ const Firestations = () => {
 
                 <input
                     type="text"
-                    placeholder="Number"
+                    placeholder="Phone number"
                     value={edit.number}
                     onChange={(e) => setEdit({...edit, number: e.target.value})}
                 />
@@ -119,13 +127,7 @@ const Firestations = () => {
     const ModalAddContent = () => {
         const handleAdd = async () => {
             try {
-                await apiService.post('/create-firestation', {
-                    address: add.address, 
-                    latitude: add.latitude, 
-                    longitude: add.longitude, 
-                    number: add.number,
-                    district: add.district
-                });
+                await apiService.post('/create-firestation', add);
                 window.location.reload();
             } catch (error) {
                 console.log(error);
@@ -135,16 +137,22 @@ const Firestations = () => {
             <div>
                 <input
                     type="text"
+                    placeholder="Name"
+                    value={add.name}
+                    onChange={(e) => setAdd({...add, name: e.target.value})}
+                />
+                <input
+                    type="text"
                     placeholder="Address"
                     value={add.address}
                     onChange={(e) => setAdd({...add, address: e.target.value})}
                 />
 
-                 <Select
-                    options={[ 'Cagayan de Oro','Misamis Oriental', 'Misamis Occidental', 
-                        'Bukidnon', 'Camiguin', 'Lanao', 'Iligan']}
-                    onChange={(e) => setAdd({...add, district: e.target.value})}
-                    value={add.district}
+                <SelectWithID
+                    options={[{id:'', name:'Select District'},...districts]}
+                    onChange={(e) => setAdd({...add, district_id: e.target.value})}
+                    field={'name'}
+                    value={add.district_id}
                 />
 
                 <input
@@ -163,7 +171,7 @@ const Firestations = () => {
 
                 <input
                     type="text"
-                    placeholder="Number"
+                    placeholder="Phone number"
                     value={add.number}
                     onChange={(e) => setAdd({...add, number: e.target.value})}
                 />
@@ -191,9 +199,9 @@ const Firestations = () => {
     
   return (
     <div style={{overflow:'scroll', height:'100%'}}>
-        <p style={{color:'orange', fontWeight:'bold', fontSize:'28px'}}>
-              Fire stations
-          </p>
+        <div style={{color:'orange', fontWeight:'bold', fontSize:'28px'}}>
+            Fire stations
+        </div>
         <Modal
             open={isOpenAdd}
             Content={ModalAddContent}
@@ -205,16 +213,31 @@ const Firestations = () => {
             Title='Update fire station'
         />
         <div style={{display:'flex', justifyContent:'space-between', marginBottom:'10px', alignItems:'center'}}>
-             <div style={{width:'16%', marginTop:'13px', fontWeight:'bold'}}>
+            <div style={{display:'flex'}}>
+             <div style={{marginTop:'13px', fontWeight:'bold', marginRight:'15px'}}>
                 <div >
-                    Filter by district
+                    Filter by District
                 </div>
-                <Select
-                    options={[ 'All','Cagayan de Oro','Misamis Oriental', 'Misamis Occidental', 
-                        'Bukidnon', 'Camiguin', 'Lanao', 'Iligan']}
-                    onChange={(e) => setFilter(e.target.value === 'All' ? '' : e.target.value)}
-                    value={filter}
+               <SelectWithID
+                    options={[{id:'',name:'ALL'},...districts]}
+                    onChange={(e) => setFilter({...filter, district_id:e.target.value})}
+                    field={'name'}
+                    value={filter.district_id}
                 />
+            
+            </div>
+            <div style={{ marginTop:'13px', fontWeight:'bold'}}>
+                <div >
+                    Filter by Region
+                </div>
+               <SelectWithID
+                    options={[{id:'',name:'ALL'},...region]}
+                    onChange={(e) => setFilter({...filter, region_id: e.target.value})}
+                    field={'name'}
+                    value={filter.region_id}
+                />
+            
+            </div>
             </div>
             <div>
             {parseInt(user.user_type_id) === 5 &&

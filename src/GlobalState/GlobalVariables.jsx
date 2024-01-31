@@ -13,6 +13,9 @@ const GlobalVariablesProvider = ({children}) => {
     const [fireStations, setFireStations] = useState([]);
     const [notifications, setNotification] = useState([]);
     const [userTypes, setUserTypes] = useState([]);
+    const [region, setRegion] = useState([]);
+    const [employees, setEmployees] = useState([]);
+    const [barangays, setBarangays] = useState([]);
 
     useEffect(() => {
 
@@ -22,13 +25,7 @@ const GlobalVariablesProvider = ({children}) => {
                  if(stations?.data){
                     setFireStations(stations.data);
                 }
-                if(token){
-                    const notification = await apiService.get('/notifications');
-                    if(notification?.data){
-                        setNotification(notification.data);
-                    }
-                }
-                
+            
                 const district = await apiService.get('/districts');
                 if(district?.data){
                     setDistricts(district.data);
@@ -39,12 +36,44 @@ const GlobalVariablesProvider = ({children}) => {
                     const filtered = position.data.filter((item) => item.name !== 'User');
                     setUserTypes(filtered);
                 }
+
             } catch (error) {
                 console.log(error);
             }
         }
         fireVariables();
     }, [token])
+
+    useEffect(() => {
+        const authVariables = async () => {
+            try {
+                const region = await apiService.get('/regions');
+                if(region?.data){
+                    setRegion(region.data);
+                }
+                
+                const notification = await apiService.get('/notifications');
+                if(notification?.data){
+                    setNotification(notification.data);
+                }
+                const employees = await apiService.get('/employee');
+                if(employees?.data){
+                    setEmployees(employees.data);
+                }
+
+                const barangay = await apiService.get('/barangays');
+                if(barangay?.data){
+                    setBarangays(barangay.data);
+                }
+               
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        if(token){
+            authVariables();
+        }
+    },[token])
 
      const fetchNotification = async () => {
             try {
@@ -88,6 +117,9 @@ const GlobalVariablesProvider = ({children}) => {
             notifications,
             fetchNotification,
             userTypes,
+            region,
+            employees,
+            barangays
         }}>
             {children}
         </GlobalVariables.Provider>

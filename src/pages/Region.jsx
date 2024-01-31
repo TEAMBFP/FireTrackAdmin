@@ -1,27 +1,14 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import apiService from '../api'
 import Modal from '../component/Modal/Modal'
 import ReusableTable from '../component/ReusableTable/ReusableTable'
-import SelectWithID from '../component/SelectWithID'
 import { GlobalVariables } from '../GlobalState/GlobalVariables'
 
 
 const cols = [
     {
-        header:'First Name',
-        field:'firstname'
-    },
-    {
-        header:'Last name',
-        field:'lastname'
-    },
-    {
-        header:'Position',
-        field:'position'
-    },
-    {
-        header:'Contact Number',
-        field:'contact_number'
+        header:'Region',
+        field:'name'
     },
     {
         header:'Action',
@@ -31,20 +18,20 @@ const cols = [
 
 
 
-const Employees = () => {
+const Region = () => {
+    const {region} = React.useContext(GlobalVariables);
     const user = JSON.parse(localStorage.getItem('user'));
-    const {userTypes, employees} = useContext(GlobalVariables)
     const [isOpenUpdate, setIsOpenUpdate] = React.useState(false);
     const [isOpenAdd, setIsOpenAdd] = React.useState(false);
     const [edit, setEdit] = React.useState('');
     const [add, setAdd] = React.useState('');
 
-    
+  
 
     const ModalUpdateContent = () => {
         const handleUpdate = async () => {
             try {
-                await apiService.post('/update-employee', {id: edit.id, user_type_id: edit.user_type_id});
+                await apiService.post('/update-region', {id: edit.id, name: edit.name});
                 window.location.reload();
             } catch (error) {
                 console.log(error);
@@ -52,11 +39,12 @@ const Employees = () => {
     }
         return (
             <div>
-                <SelectWithID
-                    options={userTypes}
-                    onChange={(e) => setEdit({...edit, user_type_id: e.target.value})}
-                    field={'name'}
-                    value={edit.user_type_id}
+            <input
+                    type="text"
+                    name="name"
+                    placeholder="Name"
+                    value={edit.name}
+                    onChange={(e) => setEdit({...edit, name: e.target.value})}
                 />
             
                 <button style={{marginRight:'10px'}} onClick={() => setIsOpenUpdate(false)}>
@@ -73,7 +61,7 @@ const Employees = () => {
     const ModalAddContent = () => {
         const handleAdd = async () => {
             try {
-                await apiService.post('/create-employees', {name: add});
+                await apiService.post('/create-region', {name: add});
                 window.location.reload();
             } catch (error) {
                 console.log(error.response.data);
@@ -102,7 +90,7 @@ const Employees = () => {
 
     const handleDelete = async (id) => {
         try {
-            await apiService.post('/delete-employee', {id});
+            await apiService.post('/delete-region', {id});
             window.location.reload();
         } catch (error) {
             console.log(error);
@@ -110,44 +98,36 @@ const Employees = () => {
     }
    
   return (
-    <div style={{overflow:'scroll', height:'100%'}}>
+    <div style={{ height:'100%'}}>
         <Modal
             open={isOpenAdd}
             Content={ModalAddContent}
-            Title='Add employees'
+            Title='Add Region'
         />
          <Modal
             open={isOpenUpdate}
             Content={ModalUpdateContent}
-            Title='Update employees'
+            Title='Update Region'
         />
-        <div style={{display:'flex', justifyContent:'space-between'}}>
-            <div style={{display:'flex', justifyContent:'end', marginBottom:'10px'}}>
-                {user.user_type_id === '5' &&
-                <button onClick={()=>setIsOpenAdd(true)}>
-                    Add
-                </button>
-                }
-            </div>
+        <div style={{display:'flex', justifyContent:'end', marginBottom:'10px'}}>
+            {parseInt(user.user_type_id) === 5 &&
+            <button onClick={()=>setIsOpenAdd(true)}>
+                Add
+            </button>
+            }
         </div>
         <ReusableTable
-            data={employees}
+            data={region}
             header={cols}
             onClick={(e) => {
-                if(parseFloat(user.user_type_id) !== 4 || parseFloat(user.user_type_id) !== 6){
-                    setIsOpenUpdate(true)
-                    setEdit(e)
-                }else{
-                    return
-                }
-               
+                if(parseInt(user.user_type_id) === 5)
+                setIsOpenUpdate(true)
+                setEdit(e)
             }}
             handleDelete={(id)=>handleDelete(id)}
-            empTable={true}
-
         />
     </div>
   )
 }
 
-export default Employees
+export default Region

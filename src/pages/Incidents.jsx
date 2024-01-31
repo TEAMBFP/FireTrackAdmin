@@ -6,6 +6,7 @@ import Switch from "../component/Switch/Switch";
 import Table from "../component/Incident/Table";
 import { useNavigate } from 'react-router-dom';
 import Select from "../component/Select";
+import SelectWithID from "../component/SelectWithID";
 
 export default function Incidents() {
 
@@ -39,6 +40,12 @@ export default function Incidents() {
     const handleGetFirestations = async () => {
       if(district === 'select district'){
         setStation('');
+        setFirestations([]);
+        return 0;
+      }
+      if(district !== 'Cagayan de Oro'){
+        setStation('no station');
+        setFirestations([]);
         return 0;
       }
       try {
@@ -125,13 +132,26 @@ export default function Incidents() {
                   />
                   </div>
                 }
-                  <input
-                    type="number"
-                    pattern="[1-9]"
-                    placeholder="Month"
-                    style={{width:'20%', marginLeft:'10px'}}
-                    onChange={(e)=>setMonth(e.target.value)}
+                  <SelectWithID
+                    options={[
+                      {id:1, name:'January'},
+                      {id:2, name:'February'},
+                      {id:3, name:'March'},
+                      {id:4, name:'April'},
+                      {id:5, name:'May'},
+                      {id:6, name:'June'},
+                      {id:7, name:'July'},
+                      {id:8, name:'August'},
+                      {id:9, name:'September'},
+                      {id:10, name:'October'},
+                      {id:11, name:'November'},
+                      {id:12, name:'December'},
+                    ]}
+                    width={'20%'}
+                    onChange={(e) => setMonth(e.target.value)}
+                    field={'name'}
                     value={month}
+                    style={{ marginLeft:'10px'}}
                   />
                    <input
                     type="number"
