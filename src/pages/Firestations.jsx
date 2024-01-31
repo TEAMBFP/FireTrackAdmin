@@ -4,6 +4,8 @@ import ReusableTable from '../component/ReusableTable/ReusableTable'
 import Modal from '../component/Modal/Modal'
 import { GlobalVariables } from '../GlobalState/GlobalVariables'
 import SelectWithID from '../component/SelectWithID'
+import useDebounce from '../lib/Debounce'
+import axios from 'axios'
 
 const cols = [
     {header: 'ID', field: 'id'},
@@ -196,6 +198,22 @@ const Firestations = () => {
             console.log(error);
         }
     }
+    const address = useDebounce(add.address, 3000);
+    useEffect(() => {
+         const handleGetLocation = async () => {
+                try {
+                    const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyCJ9or0b9JOcvrXlYFV8gnRFJphfhiO3xE`;
+                    const response = await axios.get(geocodeUrl)
+                    setAdd({...add, latitude: response.data.results[0].geometry.location.lat, longitude: response.data.results[0].geometry.location.lng});
+                    console.log(response.data.results[0].geometry.location.lat, response.data.results[0].geometry.location.lng);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        if(address){
+            handleGetLocation();
+        }
+    }, [address])
     
   return (
     <div style={{overflow:'scroll', height:'100%'}}>
