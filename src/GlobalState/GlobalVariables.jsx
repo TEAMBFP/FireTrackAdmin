@@ -5,7 +5,14 @@ import Pusher from 'pusher-js';
 
 export const GlobalVariables = createContext({});
 
-
+const startYear = new Date('2009-01-01').getFullYear();
+const endYear = new Date().getFullYear();
+const years = [];
+for(let i = startYear; i <= endYear; i++){
+  years.push(
+   { "Barangay":"barangay",[i]:i.toString()}
+  );
+}
 
 const GlobalVariablesProvider = ({children}) => {
     const token = localStorage.getItem('token');
@@ -119,7 +126,8 @@ const GlobalVariablesProvider = ({children}) => {
             userTypes,
             region,
             employees,
-            barangays
+            barangays,
+            years
         }}>
             {children}
         </GlobalVariables.Provider>

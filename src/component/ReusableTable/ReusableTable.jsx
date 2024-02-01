@@ -3,11 +3,11 @@ import React from 'react';
 import './styles.css';
 
 
-const ReusableTable = ({data, header, onClick, handleDelete, empTable}) => {
+const ReusableTable = ({data, header, onClick, handleDelete, empTable, loading}) => {
     const user = JSON.parse(localStorage.getItem('user'));
     
     return (
-        <div className="table-container" style={{height:'75%'}}>
+        <div className="table-container" style={{height:'100%'}}>
             <table className="table">
                 <thead>
                     <tr>
@@ -33,14 +33,19 @@ const ReusableTable = ({data, header, onClick, handleDelete, empTable}) => {
                                     </button>
                                 </td>
                                 :
-                                 <td key={key} onClick={()=>onClick(item)}>{item[field.field]}</td>
+                                 <td key={key} onClick={()=>onClick?onClick(item):{}}>{item[field.field]}</td>
                                  ))}
                         </tr>
                       
                     ))
                     :
+                    loading ?
                     <tr>
-                        <td colSpan={8} style={{textAlign:'center'}}>No data</td>
+                        <td colSpan={header.length} style={{textAlign:'center'}}>Loading...</td>
+                    </tr>
+                    :
+                    <tr>
+                        <td colSpan={header.length} style={{textAlign:'center'}}>No data</td>
                     </tr>
                     }
                     {/* Add more rows here */}

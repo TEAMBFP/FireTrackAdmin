@@ -6,7 +6,6 @@ import apiService from '../../api';
 
 const NotificationPanel = () => {
   const {notifications, fetchNotification} = useContext(GlobalVariables);
-  console.log(notifications);
   const [isVisible, setIsVisible] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [incident, setIncident] = useState(null);

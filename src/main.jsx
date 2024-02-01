@@ -26,6 +26,7 @@ import UserTypes from './pages/UserTypes';
 import ForgotPasswordForm from './pages/ForgotPasswordForm';
 import Region from './pages/Region';
 import Barangay from './pages/Barangay';
+import Heatmap from './pages/Heatmap';
 
 const privateRoutes = createBrowserRouter([
   {
@@ -90,6 +91,10 @@ const privateRoutes = createBrowserRouter([
       {
         path: '/barangay',
         element: <Barangay/>
+      },
+      {
+        path:'/analytics',
+        element: <Heatmap/>
       }
     ],
   },
