@@ -73,6 +73,8 @@ const RegisterAdditionalInfo = () => {
                             }
                         }}
                         value={userType}
+                        required={true}
+                        width={'100%'}
                     />
                 </div>
                 <div style={{ marginBottom: '10px', display:'flex', justifyContent:'space-between' }}>
@@ -90,6 +92,7 @@ const RegisterAdditionalInfo = () => {
                                 }
                                 required={true}
                                 disabled={userType === '1'|| userType === '5'}
+                                width={'100%'}
                             />
                         </div>
                         <div style={{width:'47%'}}>
@@ -105,6 +108,7 @@ const RegisterAdditionalInfo = () => {
                                 }
                                 required={true}
                                 disabled={userType === '1' || userType === '2'|| userType === '5' || (additional_details.district_id !== '1'&& additional_details.district_id )}
+                                width={'100%'}
                             />
                         </div>
                 </div>

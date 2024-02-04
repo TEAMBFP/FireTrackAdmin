@@ -32,6 +32,28 @@ ChartJS.register(
     },
     title: {
       display: true,
+      text: 'Years of reported Incidents',
+    },
+  },
+scales: {
+        y: {
+          suggestedMin: 0,
+          ticks: {
+            precision: 0
+          }
+        }
+      }
+};
+
+
+ const barOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'top',
+    },
+    title: {
+      display: true,
       text: 'Reported Incidents this year',
     },
   },
@@ -183,7 +205,13 @@ const DataVisualization = () => {
     loading? <div>Loading...</div>:
     <div style={{height:'100%', overflow:'scroll'}}>
     <h3>Reported Incidents</h3>
-    <div style={{marginLeft:'8px', marginBottom:'4px', fontWeight:'bold'}}>Year</div>
+  
+    <Line
+      options={options} 
+      data={lineDataSet}
+    />
+    <div style={{marginTop:'30px'}}>
+      <div style={{marginLeft:'8px', marginBottom:'4px', fontWeight:'bold'}}>Filter Year</div>
      <input
       type="number"
       pattern="[1-9]"
@@ -192,14 +220,11 @@ const DataVisualization = () => {
       onChange={(e)=>setYear(e.target.value)}
       value={year}
     />
-    <Line
-      options={options} 
-      data={lineDataSet}
-    />
      <Bar 
-      options={options} 
+      options={barOptions} 
       data={datasets} 
     />
+    </div>
     
     </div>
   )

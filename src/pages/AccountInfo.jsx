@@ -39,7 +39,8 @@ const AccounInfo = () => {
         const payload = { 
           info : data.info,
           id : JSON.parse(user).id, 
-          name : data.name,
+          firstname : data.firstname,
+          lastname : data.lastname,
           image : base64??data.image,
           email: JSON.parse(user).email
         };
@@ -94,12 +95,13 @@ const AccounInfo = () => {
         <div style={{display:'flex', flexDirection:'column', rowGap:'9px', marginTop:'26px'}}>
             <span>Position</span>
               <input 
-                  style={{height:'32px', width:'100%', fontSize:'16px'}}
+                  style={{height:'32px', width:'100%', fontSize:'16px', backgroundColor:'#F0F0F0'}}
                   onChange={(e)=>{
                       setData({...data, info:{...data.info, position:e.target.value}})
                   }}
                  value={userTypes.filter((item)=>item.id === data?.user_type_id)[0]?.name}
                  readOnly
+                 disabled
                 />
             <span>First name</span>
              <input 

@@ -57,7 +57,7 @@ export default function Heatmap(){
         setLoading({...loading, datasets: true})
         const requestDataSets = await apiService.get('/datasets');
         if(requestDataSets.status === 200){
-          setDatasets(requestDataSets?.data.datasets);
+          setDatasets(requestDataSets?.data);
           setLoading({...loading, datasets: false})
         }
         setLoading({...loading, datasets: false, predictions: true})
@@ -68,12 +68,12 @@ export default function Heatmap(){
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify(requestDataSets?.data.datasets)
+            body: JSON.stringify(requestDataSets?.data)
         });
         if(requestPredictions.status === 200){
            setLoading({...loading, datasets: false, predictions: false})
           const responseData = await requestPredictions.json();
-          const datasetsandPredictions = requestDataSets?.data.datasets.map((dataset, index) => (
+          const datasetsandPredictions = requestDataSets?.data?.map((dataset, index) => (
             {
               ...dataset,
               '2024': responseData.predictions[dataset.barangay]
