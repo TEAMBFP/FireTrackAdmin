@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import apiService from "../api";
 import React from "react";
 import Switch from "../component/Switch/Switch";
@@ -7,13 +7,14 @@ import Table from "../component/Incident/Table";
 import { useNavigate } from 'react-router-dom';
 import Select from "../component/Select";
 import SelectWithID from "../component/SelectWithID";
+import { GlobalVariables } from "../GlobalState/GlobalVariables";
 
 export default function Incidents() {
-
+  const {districts} = useContext(GlobalVariables)
   const [incidents, setIncidents] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [tableMode, setTableMode] = React.useState(true);
-  const [district, setDistrict] = React.useState('select district');
+  const [district_id, setDistrictID] = React.useState('');
   const [firestations, setFirestations] = React.useState([]);
   const [station, setStation] = React.useState('');
   const [month, setMonth] = React.useState(new Date().getMonth() + 1);
@@ -25,7 +26,7 @@ export default function Incidents() {
     const getIncidents = async () => {
       try {
         setLoading(true);
-        const response = await apiService.get('/reported-incidents?station='+station+'&month='+month+'&year='+year);
+        const response = await apiService.get('/reported-incidents?fire_station_id='+station+'&month='+month+'&year='+year);
         setIncidents(response.data);
         setLoading(false);
       } catch (error) {
@@ -38,21 +39,12 @@ export default function Incidents() {
 
   useEffect(()=>{
     const handleGetFirestations = async () => {
-      if(district === 'select district'){
-        setStation('');
-        setFirestations([]);
-        return 0;
-      }
-      if(district !== 'Cagayan de Oro'){
-        setStation('no station');
-        setFirestations([]);
-        return 0;
-      }
+      if(district_id === '') return setFirestations([]);
       try {
-          const response = await apiService.get('/firestations?district='+district);
+          const response = await apiService.get('/firestations?district_id='+district_id);
           setFirestations(response.data);
           if(response.data.length > 0){
-             setStation(response.data[0].address);
+             setStation(response.data[0].id);
           }else{
              setStation(false);
           }
@@ -63,7 +55,7 @@ export default function Incidents() {
 
     }
     handleGetFirestations();
-  },[district])
+  },[district_id])
 
   const handleOnMyway = async (id) => {
     const user = JSON.parse(localStorage.getItem('user'))
@@ -114,23 +106,20 @@ export default function Incidents() {
               Incidents Managements
           </p>
             <div style={{width:'50%', marginTop:'13px', display:'flex'}}>
-              <div style={{width:'35%', marginRight:'10px'}}>
-                <Select
-                    options={[ 'select district','Cagayan de Oro','Misamis Oriental', 'Misamis Occidental', 
-                        'Bukidnon', 'Camiguin', 'Lanao', 'Iligan']}
-                    onChange={(e) => setDistrict(e.target.value)}
-                    value={district}
+                <SelectWithID
+                    options={[{id:'',name:'Select District'},...districts]}
+                    width={'35%'}
+                    onChange={(e) => setDistrictID(e.target.value)}
+                    field={'name'}
+                    value={district_id}
                 />
-                </div>
-                
                 {firestations?.length > 0 &&
-                 <div style={{width:'50%'}}>
-                   <Select
-                    options={firestations.map((item) => item.address)}
+                   <SelectWithID
+                    options={firestations}
+                    width={'35%'}
                     onChange={(e) => setStation(e.target.value)}
-                    value={station}
+                    field={'name'}
                   />
-                  </div>
                 }
                   <SelectWithID
                     options={[
