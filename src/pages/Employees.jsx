@@ -38,6 +38,7 @@ const Employees = () => {
     const [isOpenAdd, setIsOpenAdd] = React.useState(false);
     const [edit, setEdit] = React.useState('');
     const [add, setAdd] = React.useState('');
+    const [filter, setFilter] = React.useState('')
 
     
 
@@ -108,7 +109,6 @@ const Employees = () => {
             console.log(error);
         }
     }
-   
   return (
     <div style={{overflow:'scroll', height:'100%'}}>
         <Modal
@@ -122,6 +122,19 @@ const Employees = () => {
             Title='Update employees'
         />
         <div style={{display:'flex', justifyContent:'space-between'}}>
+            <div style={{margin:'10px'}}>
+            <SelectWithID
+                options={[{id:0,name:'Filter position'},...userTypes]}
+                field={'name'}
+                // value={filter}
+                onChange={(e) => {
+                    const position = employees.filter((item) =>parseInt(item.user_type_id) === parseInt(e.target.value))
+                    if(e.target.value !== '0'){
+                        setFilter(position)
+                    }
+                }}
+            />
+            </div>
             <div style={{display:'flex', justifyContent:'end', marginBottom:'10px'}}>
                 {user.user_type_id === '5' &&
                 <button onClick={()=>setIsOpenAdd(true)}>
@@ -131,7 +144,7 @@ const Employees = () => {
             </div>
         </div>
         <ReusableTable
-            data={employees}
+            data={Array.isArray(filter)?filter:employees}
             header={cols}
             onClick={(e) => {
                 if(parseFloat(user.user_type_id) !== 4 || parseFloat(user.user_type_id) !== 6){
