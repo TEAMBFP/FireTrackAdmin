@@ -24,9 +24,9 @@ export default function SideBar() {
   return (
     <>
        
-      <div id="sidebar" className={isSidebarOpen ? 'open' : 'closed'}>          
-       <div onClick={() => setSidebarOpen(!isSidebarOpen)} style={{backgroundColor:'transparent', cursor:'pointer'}}>
-        {isSidebarOpen ? 'Collapse' : 'Expand'}
+      <div id="sidebar" className={isSidebarOpen ? 'open' : 'closed'}>      
+       <div onClick={() => setSidebarOpen(!isSidebarOpen)} style={{backgroundColor:'transparent', cursor:'pointer', height: '50px'}}>
+       <img style={{backgroundColor:'transparent', cursor:'pointer', height: '30px', width: '30px'}}className={isSidebarOpen ? 'large' : 'small'} src='hamburger_icon.svg.png' />
       </div>
 
           <img className={isSidebarOpen ? 'large' : 'small'} src={logo} />

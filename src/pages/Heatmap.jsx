@@ -56,11 +56,11 @@ export default function Heatmap(){
       try {
         setLoading({...loading, datasets: true})
         const requestDataSets = await apiService.get('/datasets');
-        if(requestDataSets.status === 200 && requestDataSets?.data?.length > 0){
+        if(requestDataSets.status === 200){
           setDatasets(requestDataSets?.data);
           setLoading({...loading, datasets: false})
-
-          setLoading({...loading, datasets: false, predictions: true})
+        }
+        setLoading({...loading, datasets: false, predictions: true})
 
         // PREDICTION PART
         const requestPredictions = await fetch('http://127.0.0.1:5000/predict', {
@@ -86,8 +86,6 @@ export default function Heatmap(){
          
         }
          setLoading({...loading, datasets: false, predictions: false})
-        }
-
       } catch (error) {
         console.error(error)
         setLoading({...loading, datasets: false, predictions: false})
