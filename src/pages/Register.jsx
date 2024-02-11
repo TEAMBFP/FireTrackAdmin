@@ -1,6 +1,8 @@
 import  { useState } from 'react';
 import apiService from '../api';
 import Select from '../component/Select';
+import bg1 from '../assets/bg2.png';
+
 
 const Register = () => {
     const [name, setName] = useState({firstname:'', lastname:''});
@@ -16,6 +18,14 @@ const Register = () => {
         address:'',
         gender:'',
     });
+
+    const styles = {
+        background: `url(${bg1}) no-repeat center center fixed`,
+        backgroundSize: 'cover',
+        height: '100vh',  // Adjust the height as needed
+        display: 'flex', justifyContent: 'center', alignItems: 'center', height: '649px', width:'100%', marginTop:'-10px' 
+
+    };
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
@@ -54,10 +64,10 @@ const Register = () => {
 
     };
     return (
-       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', width:'100%' }}>
+       <div style={styles}>
             <div>
-            <form style={{  padding: '20px 50px 20px 50px', border: '1px solid #ccc', borderRadius: '5px' }} onSubmit={handleSubmit}>
-                <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Register</h2>
+            <form style={{backgroundColor:'white',  padding: '20px 50px 20px 50px', border: '1px solid #ccc', borderRadius: '5px',marginTop:'15px' }} onSubmit={handleSubmit}>
+                <h2 style={{ textAlign: 'center', marginBottom: '20px', marginTop:'-10px' }}>Register</h2>
                  <div style={{ marginBottom: '10px', display:'flex', justifyContent:'space-between' }}>
                     <div style={{width:'47%'}}>
                         <label> First Name:</label>
@@ -169,7 +179,7 @@ const Register = () => {
                     {loading?'Loading...':'Register'}
                 </button>
                  <div>
-                    <p style={{ textAlign: 'center' }}>Have an account? <a href="/">Login</a></p>
+                    <p style={{ textAlign: 'center', marginBottom:'-10px' }}>Have an account? <a href="/">Login</a></p>
                 </div>
             </form>
             </div>
