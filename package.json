@@ -19,6 +19,7 @@
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.0",
+    "rollup": "^4.9.6",
     "sort-by": "^1.2.0"
   },
   "devDependencies": {

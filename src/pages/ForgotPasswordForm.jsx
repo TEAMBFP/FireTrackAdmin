@@ -1,5 +1,7 @@
 import React, {useState} from 'react'
 import apiService from '../api';
+import bg1 from '../assets/bg2.png';
+
 
 const ForgotPasswordForm = () => {
     const [email, setEmail] = useState('');
@@ -9,6 +11,13 @@ const ForgotPasswordForm = () => {
     const [pinCode, setPinCode] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+
+    const styles = {
+        background: `url(${bg1}) no-repeat center center fixed`,
+        backgroundSize: 'cover',
+        height: '200vh',  // Adjust the height as needed
+        display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', width:'100%'
+    };
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
@@ -84,10 +93,10 @@ const ForgotPasswordForm = () => {
         }
     }
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', width:'100%' }}>
+    <div style={styles}>
             <div>
             <form 
-                style={{ width: '320px', padding: '20px 50px 20px 50px', border: '1px solid #ccc', borderRadius: '5px' }} 
+                style={{backgroundColor:'white', width: '320px', padding: '20px 50px 20px 50px', border: '1px solid #ccc', borderRadius: '5px' }} 
                 onSubmit={mode === 1 ? handleSendCode : mode === 2 ? handlePinCodeSubmit : handleChangePassword}
             >
                 <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Forgot password</h2>
