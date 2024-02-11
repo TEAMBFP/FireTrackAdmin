@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 
 
 app = Flask(__name__)
+app.debug = True
 CORS(app)  # Enable CORS for the Flask app
 
 
@@ -39,7 +40,7 @@ def predict():
         predictions[barangay] = max(0, round(prediction_2024[0]))
 
    # Plot the predictions
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(5, 6))
     plt.bar(predictions.keys(), predictions.values())
     plt.xlabel('Barangay')
     plt.ylabel('Predicted Fire Incidents in 2024')

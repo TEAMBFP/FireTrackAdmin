@@ -257,9 +257,11 @@ i {
 }
 
 img.large {
-  width: 100%; /* adjust as needed */
-  height: 20%; /* adjust as needed */
-  background-color: orange;
+  width: 105%; /* adjust as needed */
+  height: 30%; /* adjust as needed */
+  margin-bottom: -60px;
+  margin-top: -20px;
+  background-color: transparent;
 }
 
 img.small {
