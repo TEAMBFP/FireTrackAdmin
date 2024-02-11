@@ -97,6 +97,7 @@ const Barangay = () => {
                     options={fireStations}
                     field='name'
                     style={{border:'1px solid black'}}
+                    width={'100%'}
                 />
                 District
                 <SelectWithID
@@ -106,6 +107,7 @@ const Barangay = () => {
                     options={districts}
                     field='name'
                     style={{border:'1px solid black'}}
+                    width={'100%'}
                 />
                 Region
                 <SelectWithID
@@ -115,6 +117,7 @@ const Barangay = () => {
                     options={region}
                     field='name'
                     style={{border:'1px solid black'}}
+                    width={'100%'}
                 />
             
                 <button style={{marginRight:'10px'}} onClick={() => setIsOpenUpdate(false)}>
@@ -174,6 +177,7 @@ const Barangay = () => {
                     field='name'
                     style={{border:'1px solid black'}}
                     required={true}
+                    width={'100%'}
                 />
                 District
                 <SelectWithID
@@ -182,6 +186,7 @@ const Barangay = () => {
                     options={['',...districts]}
                     field='name'
                     style={{border:'1px solid black'}}
+                    width={'100%'}
                     required={true}
                 />
                 Region
@@ -191,6 +196,7 @@ const Barangay = () => {
                     options={['',...region]}
                     field='name'
                     style={{border:'1px solid black'}}
+                    width={'100%'}
                     required={true}
                 /> 
             
@@ -241,6 +247,7 @@ const Barangay = () => {
                 setEdit(e)
             }}
             handleDelete={(id)=>handleDelete(id)}
+            
         />
     </div>
   )

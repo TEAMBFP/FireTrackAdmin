@@ -135,13 +135,13 @@ const Employees = () => {
                 }}
             />
             </div>
-            <div style={{display:'flex', justifyContent:'end', marginBottom:'10px'}}>
+            {/* <div style={{display:'flex', justifyContent:'end', marginBottom:'10px'}}>
                 {user.user_type_id === '5' &&
                 <button onClick={()=>setIsOpenAdd(true)}>
                     Add
                 </button>
                 }
-            </div>
+            </div> */}
         </div>
         <ReusableTable
             data={Array.isArray(filter)?filter:employees}

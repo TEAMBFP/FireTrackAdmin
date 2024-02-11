@@ -90,7 +90,7 @@ const Register = () => {
                         />
                     </div>
                     <div style={{width:'47%'}}>
-                        <label >Birthday:</label>
+                        <label >Birth Date:</label>
                         <input  
                             onChange={(e)=>
                                 setAdditionalDetails({...additional_details, birthday:e.target.value})

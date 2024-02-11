@@ -24,6 +24,7 @@ const GlobalVariablesProvider = ({children}) => {
     const [region, setRegion] = useState([]);
     const [employees, setEmployees] = useState([]);
     const [barangays, setBarangays] = useState([]);
+    const [alarmLevel, setAlarmLevel] = useState([]);
 
     useEffect(() => {
 
@@ -72,6 +73,11 @@ const GlobalVariablesProvider = ({children}) => {
                 const barangay = await apiService.get('/barangays');
                 if(barangay?.data){
                     setBarangays(barangay.data);
+                }
+
+                const alarmLevel = await apiService.get('/alarm-levels');
+                if(alarmLevel?.data){
+                    setAlarmLevel(alarmLevel?.data);
                 }
                
             } catch (error) {
@@ -134,7 +140,8 @@ const GlobalVariablesProvider = ({children}) => {
             region,
             employees,
             barangays,
-            years
+            years,
+            alarmLevel
         }}>
             {children}
         </GlobalVariables.Provider>

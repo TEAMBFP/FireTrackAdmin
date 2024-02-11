@@ -3,12 +3,25 @@ import apiService from '../api'
 import Modal from '../component/Modal/Modal'
 import ReusableTable from '../component/ReusableTable/ReusableTable'
 import { GlobalVariables } from '../GlobalState/GlobalVariables'
+import SelectWithID from '../component/SelectWithID'
 
 
 const cols = [
     {
         header:'Region',
         field:'name'
+    },
+    {
+        header:'Address',
+        field:'address'
+    },
+    {
+        header: 'Contact Number',
+        field: 'contact'
+    },
+    {
+        header: 'Office head',
+        field: 'office_head'
     },
     {
         header:'Action',
@@ -19,7 +32,7 @@ const cols = [
 
 
 const Region = () => {
-    const {region} = React.useContext(GlobalVariables);
+    const {region, employees} = React.useContext(GlobalVariables);
     const user = JSON.parse(localStorage.getItem('user'));
     const [isOpenUpdate, setIsOpenUpdate] = React.useState(false);
     const [isOpenAdd, setIsOpenAdd] = React.useState(false);
@@ -30,8 +43,10 @@ const Region = () => {
 
     const ModalUpdateContent = () => {
         const handleUpdate = async () => {
+            const payload = {id: edit.id, name: edit.name, address: edit.address, contact: edit.contact, user_id: edit.user_id}
+            console.log(payload);
             try {
-                await apiService.post('/update-region', {id: edit.id, name: edit.name});
+                await apiService.post('/update-region', payload);
                 window.location.reload();
             } catch (error) {
                 console.log(error);
@@ -39,12 +54,36 @@ const Region = () => {
     }
         return (
             <div>
-            <input
+                <input
                     type="text"
                     name="name"
                     placeholder="Name"
                     value={edit.name}
                     onChange={(e) => setEdit({...edit, name: e.target.value})}
+                />
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Address"
+                    value={edit.address}
+                    onChange={(e) => setEdit({...edit, address: e.target.value})}
+                />
+                 <input
+                    type="text"
+                    name="name"
+                    placeholder="Contact number"
+                    value={edit.contact}
+                    onChange={(e) => setEdit({...edit, contact: e.target.value})}
+                />
+
+                Office Head
+                <SelectWithID
+                    options={['',...employees]}
+                    onChange={(e) => setEdit({...edit, user_id: e.target.value})}
+                    field={'firstname'}
+                    required={true}
+                    value={edit.user_id}
+                    width={'100%'}
                 />
             
                 <button style={{marginRight:'10px'}} onClick={() => setIsOpenUpdate(false)}>
@@ -61,7 +100,7 @@ const Region = () => {
     const ModalAddContent = () => {
         const handleAdd = async () => {
             try {
-                await apiService.post('/create-region', {name: add});
+                await apiService.post('/create-region', {name: add.name, address: add.address, contact: add.contact, user_id: add.user_id});
                 window.location.reload();
             } catch (error) {
                 console.log(error.response.data);
@@ -69,12 +108,36 @@ const Region = () => {
         }
         return (
             <div>
-            <input
+                <input
                     type="text"
                     name="name"
                     placeholder="Name"
-                    value={add.status}
-                    onChange={(e) => setAdd(e.target.value)}
+                    value={add.name}
+                    onChange={(e) => setAdd({...add, name:e.target.value})}
+                />
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Address"
+                    value={add.address}
+                    onChange={(e) => setAdd({...add, address: e.target.value})}
+                />
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Contact number"
+                    value={add.contact}
+                    onChange={(e) => setAdd({...add, contact: e.target.value})}
+                />
+
+                Office Head
+                <SelectWithID
+                    options={['',...employees]}
+                    onChange={(e) => setAdd({...add, user_id: e.target.value})}
+                    field={'firstname'}
+                    required={true}
+                    value={add.user_id}
+                    width={'100%'}
                 />
             
                 <button style={{marginRight:'10px'}} onClick={() => setIsOpenAdd(false)}>

@@ -45,7 +45,8 @@ const UpdateIncident = () => {
 
 
     const handleChangeStatus = (e) => {
-       setStatus({...status, status:e.target.value});
+
+       setStatus({...status, status:parseInt(e.target.value)});
        
     }
 

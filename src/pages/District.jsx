@@ -69,6 +69,8 @@ const District = () => {
                 field={'firstname'}
                 required={true}
                 value={edit.user_id}
+                width={'100%'}
+
 
             />
             Postal Code
@@ -88,6 +90,8 @@ const District = () => {
                 field={'name'}
                 required={true}  
                 value={edit.region_id}
+                width={'100%'}
+                
             />  
             <div style={{marginTop:'10px'}}>        
             <button style={{marginRight:'10px'}} onClick={() => setIsOpenUpdate(false)}>
@@ -129,6 +133,7 @@ const District = () => {
                 onChange={(e) => setAdd({...add, user_id: e.target.value})}
                 field={'firstname'}
                 required={true}
+                width={'100%'}
             />
             Postal Code
             <input
@@ -145,6 +150,7 @@ const District = () => {
                 onChange={(e) => setAdd({...add, region_id: e.target.value})}
                 field={'name'}
                 required={true}  
+                width={'100%'}
             />  
             <div style={{marginTop:'10px'}}>        
             <button style={{marginRight:'10px'}} onClick={() => setIsOpenAdd(false)}>
