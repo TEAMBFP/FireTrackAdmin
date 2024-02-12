@@ -5,9 +5,9 @@ import React from "react";
 import Switch from "../component/Switch/Switch";
 import Table from "../component/Incident/Table";
 import { useNavigate } from 'react-router-dom';
-import Select from "../component/Select";
 import SelectWithID from "../component/SelectWithID";
 import { GlobalVariables } from "../GlobalState/GlobalVariables";
+import { arrayToCsv,downloadBlob  } from "../lib/ExportCSV";
 
 export default function Incidents() {
   const {districts} = useContext(GlobalVariables)
@@ -57,33 +57,7 @@ export default function Incidents() {
     handleGetFirestations();
   },[district_id])
 
-  const handleOnMyway = async (id) => {
-    const user = JSON.parse(localStorage.getItem('user'))
-    const payload = { 
-      id, 
-      status: user.name + ' is on the way'
-    };
-
-    try {
-      setLoading(true);
-      await apiService.post(`/incident-update-status`,payload);
-      setLoading(false);
-      window.location.reload();
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
-    }
-  }
-
-
-   const handleDelete = async (id) => {
-      try {
-       await apiService.post('/incident-delete', {id})
-        window.location.reload();
-      } catch (error) {
-        console.log(error);
-      }
-   }
+ 
 
     const navigate = useNavigate();
     const navigateToUpdateIncident = (id) => {
@@ -91,6 +65,22 @@ export default function Incidents() {
         navigate('/update-incident?id='+id);
     }
 
+    const handleExport = () => {
+        if (!incidents || !incidents?.length) {
+            alert('No data available to export')
+        }
+
+  
+       
+        if (incidents && incidents?.length) {
+            const row = [['Incident ID', 'Station', 'Date', 'Address', 'Alarm Level', 'Status', 'Type of Occupancy']]
+            incidents.map((d) => {
+                row.push([d.id, d.station, d.created_at, d.location, d.alarm_level, d.status, d.type])
+            })
+            const content = arrayToCsv(row)
+            downloadBlob(content, 'ListOfIncidents.csv', 'text/csv;charset=utf-8;')
+        }
+    }
 
   return (
     <div style={{height:'100%', overflow:'scroll', width:'100%'}}>
@@ -105,6 +95,7 @@ export default function Incidents() {
           <p style={{color:'orange', fontWeight:'bold', fontSize:'28px'}}>
               Incidents Managements
           </p>
+            <div style={{display:'flex', justifyContent:'space-between'}}>
             <div style={{width:'50%', marginTop:'13px', display:'flex'}}>
                 <SelectWithID
                     options={[{id:'',name:'Select District'},...districts]}
@@ -151,7 +142,12 @@ export default function Incidents() {
                     value={year}
                   />
                 </div>
-                
+                <div>
+                  <button onClick={handleExport}> 
+                    Export 
+                  </button>
+                </div>
+            </div>
         </div>
       </div>
     {loading && incidents.length === 0 ? 
@@ -166,6 +162,7 @@ export default function Incidents() {
           {header: 'Station', field: 'station'}, 
           {header: 'Date', field: 'created_at'}, 
           {header: 'Address', field:'location'}, 
+          {header: 'Alarm Level', field:'alarm_level'}, 
           {header: 'Status', field:'status'}, 
           {header: 'Type of Occupancy', field:'type'},
         ]}
@@ -195,20 +192,7 @@ export default function Incidents() {
             <div>
               Status: {incident.status}
             </div>
-
-              {incident.status === 'pending' ? 
-            <button  >
-              On my way!
-            </button>
-            :
-            <button  >
-              Delete
-            </button>
-            }
-          
           </div>
-        
-       
       </div>
       </div>
       ))

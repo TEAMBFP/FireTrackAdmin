@@ -16,6 +16,7 @@ for(let i = startYear; i <= endYear; i++){
 
 const GlobalVariablesProvider = ({children}) => {
     const token = localStorage.getItem('token');
+    const userId = JSON.parse(localStorage.getItem('user'))?.id;
     const [districts, setDistricts] = useState([]);
     const [fireStations, setFireStations] = useState([]);
     const [notifications, setNotification] = useState([]);
@@ -23,6 +24,7 @@ const GlobalVariablesProvider = ({children}) => {
     const [region, setRegion] = useState([]);
     const [employees, setEmployees] = useState([]);
     const [barangays, setBarangays] = useState([]);
+    const [alarmLevel, setAlarmLevel] = useState([]);
 
     useEffect(() => {
 
@@ -72,6 +74,11 @@ const GlobalVariablesProvider = ({children}) => {
                 if(barangay?.data){
                     setBarangays(barangay.data);
                 }
+
+                const alarmLevel = await apiService.get('/alarm-levels');
+                if(alarmLevel?.data){
+                    setAlarmLevel(alarmLevel?.data);
+                }
                
             } catch (error) {
                 console.log(error);
@@ -116,7 +123,13 @@ const GlobalVariablesProvider = ({children}) => {
         alert(JSON.stringify(data));
     });
 
-    }, [token]);
+    var channel2 = pusher.subscribe('user.' + userId);
+
+    channel2.bind('notify-next-station', function(data) {
+        alert(data.message);
+    });
+
+    }, [token, userId]);
     return (
         <GlobalVariables.Provider value={{
             districts,
@@ -127,7 +140,8 @@ const GlobalVariablesProvider = ({children}) => {
             region,
             employees,
             barangays,
-            years
+            years,
+            alarmLevel
         }}>
             {children}
         </GlobalVariables.Provider>

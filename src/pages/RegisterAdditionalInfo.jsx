@@ -101,7 +101,7 @@ const RegisterAdditionalInfo = () => {
                                 options={[
                                     {id:'', address:''}
                                     ,...fireStations]}
-                                field={'address'}
+                                field={'name'}
                                 value={additional_details.firestation_id}
                                 onChange={(e)=>
                                     setAdditionalDetails({...additional_details, firestation_id:e.target.value})

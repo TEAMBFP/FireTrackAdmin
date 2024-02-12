@@ -1,15 +1,14 @@
-import React, { useEffect } from "react";
+import React from "react";
 import GoogleMapReact from 'google-map-react';
 import ReusableTable from "../component/ReusableTable/ReusableTable";
 import apiService from "../api";
-import axios from "axios";
 
 const startYear = new Date('2009-01-01').getFullYear();
 const endYear = new Date().getFullYear();
 const years = [{header:'Barangay', field:'barangay'}];
 for(let i = startYear; i <= endYear; i++){
   years.push(
-    {header:i.toString(), field:i.toString()}
+    {header:i.toString()==='2024'?'Total':i.toString(), field:i.toString()}
   );
 }
 
@@ -56,11 +55,11 @@ export default function Heatmap(){
       try {
         setLoading({...loading, datasets: true})
         const requestDataSets = await apiService.get('/datasets');
-        if(requestDataSets.status === 200){
+        if(requestDataSets.status === 200 && requestDataSets?.data?.length > 0){
           setDatasets(requestDataSets?.data);
           setLoading({...loading, datasets: false})
-        }
-        setLoading({...loading, datasets: false, predictions: true})
+
+          setLoading({...loading, datasets: false, predictions: true})
 
         // PREDICTION PART
         const requestPredictions = await fetch('http://127.0.0.1:5000/predict', {
@@ -73,7 +72,7 @@ export default function Heatmap(){
         if(requestPredictions.status === 200){
            setLoading({...loading, datasets: false, predictions: false})
           const responseData = await requestPredictions.json();
-          const datasetsandPredictions = requestDataSets?.data?.map((dataset, index) => (
+          const datasetsandPredictions = requestDataSets?.data?.map((dataset) => (
             {
               ...dataset,
               '2024': responseData.predictions[dataset.barangay]
@@ -86,6 +85,8 @@ export default function Heatmap(){
          
         }
          setLoading({...loading, datasets: false, predictions: false})
+        }
+
       } catch (error) {
         console.error(error)
         setLoading({...loading, datasets: false, predictions: false})
@@ -115,9 +116,40 @@ export default function Heatmap(){
             heatmapLibrary={true}          
             heatmap={heatMapData}
           >
+            {heatMapData.positions.map((position, index) => (
+         
+                <Marker 
+                key={index}
+                lat={position.lat}
+                lng={position.lng}
+                text={position.weight}
+                />
+
+        ))}
           </GoogleMapReact>
           
       </div>
     </div>
   );
+}
+
+const greatPlaceStyle = {
+  position: 'absolute',
+  transform: 'translate(-50%, -50%)',
+
+
+  
+}
+
+const Marker = ({text}) => {
+  return <div>
+    <div style={greatPlaceStyle}>
+      <div style={{
+       
+        height: '100%',
+      }}>
+      {text}
+      </div>
+    </div>
+  </div>
 }
