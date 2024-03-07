@@ -2,6 +2,7 @@ import React from "react";
 import GoogleMapReact from 'google-map-react';
 import ReusableTable from "../component/ReusableTable/ReusableTable";
 import apiService from "../api";
+import { capture } from "../lib/ScreenShotById";
 
 const startYear = new Date('2009-01-01').getFullYear();
 const endYear = new Date().getFullYear();
@@ -108,7 +109,12 @@ export default function Heatmap(){
           header={years}
           loading={loading.datasets}
         />
-        <div style={{ height: '50vh', width:'70%', marginTop:'34px' }}>
+        <div style={{margin:'20px 0px 20px 0px'}}>
+        <button onClick={()=>capture('gmaps','Heat-map')}>
+          Download Heatmap
+        </button>
+        </div>
+        <div id={'gmaps'} style={{ height: '100vh', width: '100%', marginTop:'34px' }}>
           <GoogleMapReact
             bootstrapURLKeys={{ key: import.meta.env.VITE_GOOGLE_API_KEY }}
             defaultCenter={defaultProps.center}
