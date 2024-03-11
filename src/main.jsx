@@ -10,6 +10,7 @@ import ErrorPage from './pages/ErrorPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Incidents from './pages/Incidents';
+import CitizenIncidents from './pages/CitizenIncidents';
 import UpdateIncident from './pages/UpdateIncident';
 import ProfileSideBar from './component/ProfileSideBar';
 import AccounInfo from './pages/AccountInfo';
@@ -37,6 +38,10 @@ const privateRoutes = createBrowserRouter([
       {
         path: "/",
         element: <Incidents />,
+      },
+      {
+        path:'/citizen-incident',
+        element: <CitizenIncidents />
       },
       {
         path: "/update-incident",

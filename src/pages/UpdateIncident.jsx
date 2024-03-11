@@ -234,7 +234,7 @@ const UpdateIncident = () => {
 
             {/*  STATUS */}
              <div style={{display:'flex', flexDirection:'column', rowGap:'9px', width:'30%'}}>
-                    <span style={{fontWeight:'500', fontSize:'26px', margin:'5px 0px 5px 0px'}}>Responder</span>
+                    <span style={{fontWeight:'500', fontSize:'26px', margin:'5px 0px 5px 0px'}}>Status</span>
                     <span style={{fontWeight:'600'}}>
                         Time of arrival
                     </span>

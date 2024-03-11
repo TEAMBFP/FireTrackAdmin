@@ -9,7 +9,7 @@ import SelectWithID from "../component/SelectWithID";
 import { GlobalVariables } from "../GlobalState/GlobalVariables";
 import { arrayToCsv,downloadBlob  } from "../lib/ExportCSV";
 
-export default function Incidents() {
+export default function CitizenIncidents() {
   const {districts} = useContext(GlobalVariables)
   const [incidents, setIncidents] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
@@ -19,7 +19,6 @@ export default function Incidents() {
   const [station, setStation] = React.useState('');
   const [month, setMonth] = React.useState(new Date().getMonth() + 1);
   const [year, setYear] = React.useState(new Date().getFullYear());
-  const [barangay, setBarangay] = React.useState([]);
     
 
 
@@ -27,19 +26,19 @@ export default function Incidents() {
     const getIncidents = async () => {
       try {
         setLoading(true);
-        const response = await apiService.get('/reported-incidents?fire_station_id='+station+'&month='+month+'&year='+year);
-        // Fetching additional details for each incident
-        const incidentsWithDetails = await Promise.all(
-          response.data.map(async (incident) => {
-            console.log('Incident:', incident); // Log the incident to the console
-            const detailsResponse = await apiService.get(`/get-incident-details?id=${incident.id}`);
-            const details = detailsResponse.data;
-            // Adding additional details to the incident
-            return {...incident, deaths: details.deaths, injured: details.injured, estimatedDamage: details.damages};
+        const response = await apiService.get('/citizen-incident?fire_station_id='+station+'&month='+month+'&year='+year);
+        const incidentsData = response.data;
+        // Fetch user information for each incident 
+        const incidentsWithUserInfo = await Promise.all(
+          incidentsData.map(async (incident) => {
+            const userInfoResponse = await apiService.get(`/citizen-incident?${incident.user_id}`);
+            const userInfo = userInfoResponse.data;
+            // Adding firstname and lastname to the incident
+            return { ...incident, firstname: userInfo.firstname, lastname: userInfo.lastname };
           })
         );
 
-        setIncidents(incidentsWithDetails);
+        setIncidents(incidentsWithUserInfo);
         setLoading(false);
       } catch (error) {
         setLoading(false);
@@ -47,29 +46,28 @@ export default function Incidents() {
       }
     }
     getIncidents();
-  },[station, month, year, barangay])
+  },[station, month, year])
 
-  useEffect(()=>{
-    const handleGetFirestations = async () => {
-      if(district_id === '') return setFirestations([]);
-      try {
-          const response = await apiService.get('/firestations?district_id='+district_id);
-          setFirestations(response.data);
-          if(response.data.length > 0){
-             setStation(response.data[0].id);
-          }else{
-             setStation(false);
-          }
+//   useEffect(()=>{
+//     const handleGetFirestations = async () => {
+//       if(district_id === '') return setFirestations([]);
+//       try {
+//           const response = await apiService.get('/firestations?district_id='+district_id);
+//           setFirestations(response.data);
+//           if(response.data.length > 0){
+//              setStation(response.data[0].id);
+//           }else{
+//              setStation(false);
+//           }
          
-      } catch (error) {
-          console.log(error);
-      }
+//       } catch (error) {
+//           console.log(error);
+//       }
 
-    }
-    handleGetFirestations();
-  },[district_id])  
+//     }
+//     handleGetFirestations();
+//   },[district_id])
 
- 
 
     const navigate = useNavigate();
     const navigateToUpdateIncident = (id) => {
@@ -83,17 +81,16 @@ export default function Incidents() {
         }
 
   
-       
+       //export to csv file
         if (incidents && incidents?.length) {
-            const row = [['Incident ID', 'Station', 'Date', 'Address', 'Alarm Level', 'Deaths', 'Injured','Status', 'Type of Occupancy', 'Est. Damaged']]
+            const row = [['Informat', 'Contact Number', 'Address']]
             incidents.map((d) => {
-                row.push([d.id, d.station, d.created_at, d.location, d.alarm_level, d.fatality, d.injury, d.status, d.type, d.damages])
+                row.push([d.informat, d.contactno, d.location])
             })
             const content = arrayToCsv(row)
-            downloadBlob(content, 'ListOfIncidents.csv', 'text/csv;charset=utf-8;')
+            downloadBlob(content, '.csv', 'text/csv;charset=utf-8;')
         }
     }
-
 
   return (
     <div style={{height:'100%', overflow:'scroll', width:'100%'}}>
@@ -106,7 +103,7 @@ export default function Incidents() {
         </div>
         <div style={{padding:'10px', borderRadius:'10px',}}>
           <p style={{color:'orange', fontWeight:'bold', fontSize:'28px'}}>
-              Incidents Managements
+              Citizen's Reported Incidents
           </p>
             <div style={{display:'flex', justifyContent:'space-between'}}>
             <div style={{width:'50%', marginTop:'13px', display:'flex'}}>
@@ -146,7 +143,6 @@ export default function Incidents() {
                     value={month}
                     style={{ marginLeft:'10px'}}
                   />
-                  </div>
                    <input
                     type="number"
                     pattern="[1-9]"
@@ -155,14 +151,7 @@ export default function Incidents() {
                     onChange={(e)=>setYear(e.target.value)}
                     value={year}
                   />
-                    {/* Search input without a search button */}
-                    <input
-                      type="text"
-                      placeholder="Search Barangay..."
-                      style={{width:'20%', marginLeft:'10px'}}
-                      onChange={(e) => setBarangay(e.target.value)}
-                      value = {barangay}
-                    />
+                </div>
                 <div>
                   <button onClick={handleExport}> 
                     Export 
@@ -176,20 +165,13 @@ export default function Incidents() {
       : 
       tableMode ?
       <Table 
-        data={incidents} 
+        data={incidents}
         header={[
           {header: 'Image', field:'image' },
-          {header: 'Incident ID', field: 'id'}, 
-          {header: 'Station', field: 'station'}, 
-          {header: 'Date', field: 'created_at'}, 
-          {header: 'Address', field:'location'}, 
-          {header: 'Alarm Level', field:'alarm_level'}, 
-          {header: 'Deaths', field: 'fatality'},
-          {header: 'Injured', field: 'injury'},
-          {header: 'Status', field:'status'}, 
-          {header: 'Type of Occupancy', field:'type'},
-          {header: 'Estimated Damage', field:'damages'},
-          // {header: 'barangay', field:'barangay'},
+          { header: 'Informant', field: 'informat'},
+          { header: 'Contact Number', field: 'contactno'},
+          {header: 'Address', field:'location'},
+          {header: 'Date', field:'created_at'},
         ]}
         onClick={navigateToUpdateIncident}
       />

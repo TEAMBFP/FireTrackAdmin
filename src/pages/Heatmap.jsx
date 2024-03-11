@@ -8,7 +8,7 @@ const endYear = new Date().getFullYear();
 const years = [{header:'Barangay', field:'barangay'}];
 for(let i = startYear; i <= endYear; i++){
   years.push(
-    {header:i.toString()==='2024'?'Total':i.toString(), field:i.toString()}
+    {header:i.toString(), field:i.toString()}
   );
 }
 
