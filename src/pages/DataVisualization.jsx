@@ -12,6 +12,7 @@ import {
 } from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
 import apiService from "../api";
+import { capture } from '../lib/ScreenShotById';
 
 ChartJS.register(
   CategoryScale,
@@ -205,8 +206,9 @@ const DataVisualization = () => {
     loading? <div>Loading...</div>:
     <div style={{height:'100%', overflow:'scroll'}}>
     <h3>Reported Incidents</h3>
-  
+    <button onClick={()=>capture('line-chart','line-chart')}>Export Line Chart</button>
     <Line
+      id='line-chart'
       options={options} 
       data={lineDataSet}
     />
@@ -220,7 +222,9 @@ const DataVisualization = () => {
       onChange={(e)=>setYear(e.target.value)}
       value={year}
     />
+    <button onClick={()=>capture('bar-chart','bar-chart')}>Export Bar Chart</button>
      <Bar 
+      id='bar-chart'
       options={barOptions} 
       data={datasets} 
     />
