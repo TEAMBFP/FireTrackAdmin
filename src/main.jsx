@@ -49,6 +49,10 @@ const privateRoutes = createBrowserRouter([
         element: <Incidents />,
       },
       {
+        path: "/citizen-incident",
+        element: <CitizenIncidents />,
+      },
+      {
         path: "/update-incident",
         element: <UpdateIncident />,
       },
