@@ -6,9 +6,38 @@ import PageLoader from '../component/PageLoader';
 import apiService from '../api';
 import SelectWithID from '../component/SelectWithID.jsx';
 import { GetFireStatus } from '../api/FireVariablesAPI';
+import jsPDF from 'jspdf';
 
 
 const UpdateIncident = () => {
+
+    const handleGeneratePDF = () => {
+        const pdf = new jsPDF();
+    
+        pdf.text('INCIDENT INFORMATION', 20, 20);
+        pdf.text('Type of Occupancy: ' + incident.type, 20, 30);
+        pdf.text('Name of Owner: ' + incident.owner, 20, 40);
+        pdf.text('Fatality: ' + incident.fatality, 20, 50);
+        pdf.text('Estimated Damages: ' + incident.damages, 20, 60);
+        pdf.text('Injured: ' + incident.injured, 20, 70);
+        pdf.text('Number of House/Establishment: ' + incident.numHouseAndEstablishment, 20, 80);
+        pdf.text('Number of Family Affected: ' + incident.numFamilyAffected, 20, 90);
+        pdf.text('Number of Trucks Responded: ' + incident.numTrucksResponded, 20, 100);
+    
+        pdf.text('RESPONDER', 20, 120);
+        pdf.text('Ground Commander: ' + responder.commander, 20, 130);
+        pdf.text('Time/Date Reported: ' + responder.date, 20, 140);
+        pdf.text('Responding Team: ' + responder.team, 20, 150);
+        pdf.text('Involved: ' + responder.involved, 20, 160);
+    
+        pdf.text('STATUS', 20, 180);
+        pdf.text('Time of Departure: ' + (DateTimeFormat(status.departure_time) ?? 'N/A'), 20, 190);
+        pdf.text('Time of Arrival: ' + status.timeArrival, 20, 200);
+        pdf.text('Fire Out: ' + status.fireOut, 20, 210);
+        pdf.text('Status: ' + status.status, 20, 220);
+    
+        pdf.save('incident_report.pdf');
+      };
 
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
@@ -130,6 +159,7 @@ const UpdateIncident = () => {
             <div>
                 <h1 style={{color:'orange'}}>Update Incident</h1>
             </div>
+            
             <div >
                 <button 
                     onClick={handleUpdate}
@@ -266,6 +296,13 @@ const UpdateIncident = () => {
                         field={'status'}
                    />
                      }
+            <div align='right'><br></br>
+            <button
+                onClick={handleGeneratePDF}
+                style={{ color: 'white', backgroundColor: 'orange' }}>
+                Print PDF
+            </button>
+            </div>
 
             </div>
         </div>

@@ -44,6 +44,7 @@ const RegisterAdditionalInfo = () => {
         if(!user || !user?.info){
             window.location.href = '/';
         }
+        // setUserType('6');
     
     }, [user])
     console.log(user);
@@ -60,7 +61,10 @@ const RegisterAdditionalInfo = () => {
                         style={{ width: '100%', padding: '5px', border:'1px solid gray' }} 
                     /> */}
                     <SelectWithID
-                        options={['',...userTypes]} 
+                        // options={userTypes.filter(option => option.id === 6)}
+                        options={[
+                            {id:'', name:''}
+                            ,...userTypes]} 
                         field={'name'}
                         fontSize={'0.75rem'}
                         onChange={(e)=>{

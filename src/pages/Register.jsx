@@ -1,10 +1,12 @@
 import  { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import apiService from '../api';
 import Select from '../component/Select';
 import bg1 from '../assets/bg2.png';
 
 
 const Register = () => {
+    const navigate = useNavigate();  // Get history from React Router
     const [name, setName] = useState({firstname:'', lastname:''});
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -54,8 +56,11 @@ const Register = () => {
             if(res?.data){
                 localStorage.setItem('user', JSON.stringify(res.data.user));
                 setMessage('We have sent you an email to verify your account. Please check your email.')
-              
-            }
+                // Redirect to the new page after 3 seconds
+                setTimeout(() => {
+                    navigate('/');
+                }, 3000);
+                    }
             setLoading(false);
         } catch (error) {
             setLoading(false);
