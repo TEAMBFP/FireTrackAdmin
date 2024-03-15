@@ -27,6 +27,15 @@ import ForgotPasswordForm from './pages/ForgotPasswordForm';
 import Region from './pages/Region';
 import Barangay from './pages/Barangay';
 import Heatmap from './pages/Heatmap';
+import IncidentLogs from './pages/IncidentLogs';
+
+
+ 
+const Charts = React.memo(function Employees() {
+  return <DataVisualization/>
+});
+
+
 
 const privateRoutes = createBrowserRouter([
   {
@@ -37,6 +46,10 @@ const privateRoutes = createBrowserRouter([
       {
         path: "/",
         element: <Incidents />,
+      },
+      {
+        path: "/incident-logs",
+        element: <IncidentLogs />,
       },
       {
         path: "/update-incident",
@@ -131,7 +144,7 @@ const auth = localStorage.getItem('token');
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
         <GlobalVariablesProvider>
-          <RouterProvider router={auth ?privateRoutes:publicRoute} />
+          <RouterProvider router={privateRoutes} />
         </GlobalVariablesProvider>
   </React.StrictMode>,
 )

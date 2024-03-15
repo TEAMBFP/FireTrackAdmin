@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -13,6 +13,9 @@ import {
 import { Line, Bar } from 'react-chartjs-2';
 import apiService from "../api";
 import { capture } from '../lib/ScreenShotById';
+import { GlobalVariables } from '../GlobalState/GlobalVariables';
+import SelectWithID from '../component/SelectWithID';
+import Select from '../component/Select';
 
 ChartJS.register(
   CategoryScale,
@@ -75,24 +78,6 @@ const yearslabel = Array.from(
   new Array(currentYear - startYear + 1),
   (val, index) => index + startYear
 )
-const test = [
-    '2009',
-    '2010',
-    '2011',
-    '2012',
-    '2013',
-    '2014',
-    '2015',
-    '2016',
-    '2017',
-    '2018',
-    '2019',
-    '2020',
-    '2021',
-    '2022',
-    '2023',
-    '2024'
-]
 
 function getRandomColor() {
   const r = Math.floor(Math.random() * 256);
@@ -101,18 +86,22 @@ function getRandomColor() {
   return `rgb(${r}, ${g}, ${b})`;
 }
 const DataVisualization = () => {
+  const {fireStations} = useContext(GlobalVariables);
   const [incidents, setIncidents] = React.useState([]);
-  const [loading, setLoading] = React.useState(false);
+  const [loadingLine, setLoadingLine] = React.useState(false);
+  const [loadingBar, setLoadingBar] = React.useState(false);
+
   const [year, setYear] = React.useState(new Date().getFullYear());
   const [yearsIncidents, setYearsIncidents] = React.useState([]);
-
+  const [mutatedYearsIncident, setMutatedYearsIncident] = React.useState([]);
+  const [brgy, setBrgy] = React.useState([]);
+  const [filter, setFilter] = React.useState('Filter by Barangay');
 
   useEffect(()=>{
     const handleGetIncidents = async ()=>{
-      setLoading(true);
+      setLoadingBar(true);
       try {
         const response = await apiService.get('/reported-incidents?year='+year);
-        const yearsIncident = await apiService.get('/reported-incidents');
         const groupedIncidents = response.data.reduce((acc, incident) => {
         const key = incident.barangay;
         if (!acc[key]) {
@@ -121,19 +110,11 @@ const DataVisualization = () => {
         acc[key].push(incident);
         return acc;
       }, {});
-        const groupedYearsIncidents = yearsIncident.data.reduce((acc, incident) => {
-        const key = incident.barangay;
-        if (!acc[key]) {
-          acc[key] = [];
-        }
-        acc[key].push(incident);
-        return acc;
-      }, {});
+    
       setIncidents(groupedIncidents);
-      setYearsIncidents(groupedYearsIncidents);
-      setLoading(false);
+      setLoadingBar(false);
       } catch (error) {
-        setLoading(false);
+        setLoadingBar(false);
         console.log(error);
       }
 
@@ -143,10 +124,30 @@ const DataVisualization = () => {
 
   useEffect(()=>{
       const handleGetIncidents = async ()=>{
-      setLoading(true);
+      setLoadingLine(true);
       try {
-        const yearsIncident = await apiService.get('/reported-incidents');
-        const groupedYearsIncidents = yearsIncident.data.reduce((acc, incident) => {
+        const yearsIncident = await apiService.get(`/reported-incidents`);
+        setYearsIncidents(yearsIncident.data);
+      setLoadingLine(false);
+      } catch (error) {
+        setLoadingLine(false);
+      }
+
+    }
+    if(incidents){
+       handleGetIncidents();
+    }
+   
+  },[incidents])
+
+  useEffect(()=>{
+        if(!yearsIncidents) return;
+        const barangays = yearsIncidents.map((inci)=>
+          inci.barangay
+        ) 
+        setBrgy([...new Set(barangays)])
+        const filering = filter === 'Filter by Barangay'? yearsIncidents: yearsIncidents.filter((inci)=> inci.barangay === filter);
+        const groupedYearsIncidents = filering.reduce((acc, incident) => {
         const key = incident.barangay;
         if (!acc[key]) {
           acc[key] = [];
@@ -154,16 +155,8 @@ const DataVisualization = () => {
         acc[key].push(incident);
         return acc;
       }, {});
-      setYearsIncidents(groupedYearsIncidents);
-      setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        console.log(error);
-      }
-
-    }
-    handleGetIncidents();
-  },[])
+      setMutatedYearsIncident(groupedYearsIncidents);
+  },[yearsIncidents,filter])
 
   const datasets = {
     labels,
@@ -182,15 +175,18 @@ const DataVisualization = () => {
     })
   };
 
+
+  console.log(mutatedYearsIncident);
+
   const lineDataSet = {
     labels: yearslabel,
-    datasets:  Object.keys(yearsIncidents).map((key,ind) => {
+    datasets:  Object.keys(mutatedYearsIncident).map((key,ind) => {
       const color = getRandomColor();
       return {
         label: key,
         data: yearslabel.map((data, ind) => {
           let count = 0;
-          yearsIncidents[key].map(incident => new Date(incident.created_at).getFullYear() === data? count++:0);
+          mutatedYearsIncident[key].map(incident => new Date(incident.created_at).getFullYear() === data? count++:0);
           return count;
         }),
         backgroundColor: color,
@@ -199,19 +195,27 @@ const DataVisualization = () => {
     })
   }
 
- 
+  console.log(yearsIncidents);
 
-  console.log(yearsIncidents, incidents);
   return (
-    loading? <div>Loading...</div>:
     <div style={{height:'100%', overflow:'scroll'}}>
     <h3>Reported Incidents</h3>
     <button onClick={()=>capture('line-chart','line-chart')}>Export Line Chart</button>
-    <Line
-      id='line-chart'
-      options={options} 
-      data={lineDataSet}
+    <div style={{width:'25%'}}>
+    <div style={{marginLeft:'8px', marginBottom:'4px', fontWeight:'bold'}}>Filter by Barangay</div>
+    <Select
+      options={['Filter by Barangay',...brgy]}
+      value={filter}
+      onChange={(e)=>setFilter(e.target.value)}
     />
+    </div>
+    {loadingLine? <div>Loading...</div>:
+      <Line
+        id='line-chart'
+        options={options} 
+        data={lineDataSet}
+      />
+    }
     <div style={{marginTop:'30px'}}>
       <div style={{marginLeft:'8px', marginBottom:'4px', fontWeight:'bold'}}>Filter Year</div>
      <input
@@ -223,11 +227,13 @@ const DataVisualization = () => {
       value={year}
     />
     <button onClick={()=>capture('bar-chart','bar-chart')}>Export Bar Chart</button>
+    {loadingBar? <div>Loading...</div>:
      <Bar 
       id='bar-chart'
       options={barOptions} 
       data={datasets} 
     />
+  }
     </div>
     
     </div>
