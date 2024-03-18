@@ -144,7 +144,7 @@ const auth = localStorage.getItem('token');
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
         <GlobalVariablesProvider>
-          <RouterProvider router={privateRoutes} />
+          <RouterProvider router={auth? privateRoutes: publicRoute} />
         </GlobalVariablesProvider>
   </React.StrictMode>,
 )
