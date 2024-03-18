@@ -86,7 +86,6 @@ function getRandomColor() {
   return `rgb(${r}, ${g}, ${b})`;
 }
 const DataVisualization = () => {
-  const {fireStations} = useContext(GlobalVariables);
   const [incidents, setIncidents] = React.useState([]);
   const [loadingLine, setLoadingLine] = React.useState(false);
   const [loadingBar, setLoadingBar] = React.useState(false);
@@ -134,11 +133,12 @@ const DataVisualization = () => {
       }
 
     }
-    if(incidents){
-       handleGetIncidents();
-    }
+    handleGetIncidents();
+    // if(incidents){
+    //    handleGetIncidents();
+    // }
    
-  },[incidents])
+  },[])
 
   useEffect(()=>{
         if(!yearsIncidents) return;

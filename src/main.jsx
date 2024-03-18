@@ -30,12 +30,8 @@ import Heatmap from './pages/Heatmap';
 import IncidentLogs from './pages/IncidentLogs';
 
 
- 
-const Charts = React.memo(function Employees() {
-  return <DataVisualization/>
-});
 
-
+const chart = <DataVisualization/>
 
 const privateRoutes = createBrowserRouter([
   {
@@ -87,7 +83,7 @@ const privateRoutes = createBrowserRouter([
       },
       {
         path: "/data-visualization",
-        element: <DataVisualization/>
+        element: chart
       },
       {
         path: "/employees",
