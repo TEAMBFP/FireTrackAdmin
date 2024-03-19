@@ -7,7 +7,8 @@ import Modal from '../component/Modal/Modal';
 const IncidentLogs = () => {
   const [logs, setLogs] = React.useState([]);
   const [isOpenModal, setIsOpenModal] = React.useState(false);
-  const [selectedLog, setSelectedLog] = React.useState({});
+  const [selectedLog, setSelectedLog] = React.useState();
+  const [incidentDetails, setIncidentDetails] = React.useState();
 
   useEffect(() => {
       const handleGetLogs= async () => {
@@ -20,6 +21,18 @@ const IncidentLogs = () => {
       }
       handleGetLogs();
   },[]);
+
+
+  useEffect(() => {
+      const getIncident = async () => {
+        const incidentDetails = await apiService.get('/incident-details?id='+selectedLog.new_values.incident_id);
+        setIncidentDetails(incidentDetails.data)
+      }
+      if(selectedLog){
+         getIncident();
+      }
+   
+  }, [selectedLog]);
   const ModalContent = () => {
     function compareObjects(obj1, obj2) {
       let changes =  [];
@@ -37,7 +50,10 @@ const IncidentLogs = () => {
         <div>
             <h4>{selectedLog.event.charAt(0).toUpperCase() + selectedLog.event.slice(1)} by {selectedLog.user}</h4>
         </div>
-         <div>
+        <div>
+          Incident in   {incidentDetails?.location} on {incidentDetails?.created_at}
+        </div>
+        <div>
          {compareObjects(selectedLog.old_values.incident, selectedLog.new_values.incident)}
         </div>
          <div>
@@ -46,19 +62,20 @@ const IncidentLogs = () => {
         <div>
          {compareObjects(selectedLog.old_values.status, selectedLog.new_values.status)}
         </div>
+        <div style={{marginTop:'50px'}}>
         <button onClick={()=>setIsOpenModal(false)}>
            OK
         </button>
+        </div>
       </div>
     )
 }
 
   return (
-    <div>
+    <div style={{height:'86%'}}>
       <h1>Incident Logs</h1>
       <ReusableTable
         header={[
-          {header:'Incident ID', field:'auditable_id'},
           {header:'Event', field:'event'},
           {header:'User', field:'user'},
           {header:'IP Address', field:'ip_address'},
