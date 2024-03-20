@@ -4,8 +4,8 @@ import { DateTimeFormat } from '../lib/DateTimeFormat';
 import { useNavigate } from 'react-router-dom';
 import PageLoader from '../component/PageLoader';
 import apiService from '../api';
+import NestedDropdown from '../component/NestedDropdown/NestedDropdown.jsx';
 import SelectWithID from '../component/SelectWithID.jsx';
-import { GetFireStatus } from '../api/FireVariablesAPI';
 
 
 const UpdateIncident = () => {
@@ -42,11 +42,12 @@ const UpdateIncident = () => {
 
     const [loading,setLoading] = React.useState(false);
 
+    const [fireTypes, setFireTypes] = React.useState([]);
+
 
 
     const handleChangeStatus = (e) => {
-
-       setStatus({...status, status:parseInt(e.target.value)});
+       setStatus({...status, status:e.target.value});
        
     }
 
@@ -84,6 +85,8 @@ const UpdateIncident = () => {
             setLoading(true);
             try {
                 const res = await apiService.get(`/get-incident-details?id=${id}`);
+                const fireTyps = await apiService.get('/fire-types');
+                setFireTypes(fireTyps?.data);
                 if(res?.data?.incident){
                     setIncident(res.data.incident);
                 }
@@ -102,18 +105,10 @@ const UpdateIncident = () => {
                 console.log(error);
             }
         }
-        const handGetFireStatus = async () => {
-            try {
-                const res = await GetFireStatus();
-                setListFireStatus(res.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        handGetFireStatus()
         handGetDetails();
     },[id])
 
+  const user = JSON.parse(localStorage.getItem('user'));
   return (
     <div style={{
         backgroundColor:'white', 
@@ -133,7 +128,9 @@ const UpdateIncident = () => {
             <div >
                 <button 
                     onClick={handleUpdate}
-                    style={{color:'white', backgroundColor:'orange'}}> 
+                    style={{color:'white', backgroundColor:'orange'}}
+                    disabled={parseInt(user.user_type_id) !== 5}
+                    > 
                     Update
                 </button>
                 <button 
@@ -151,54 +148,122 @@ const UpdateIncident = () => {
                     <span style={{fontWeight:'500', fontSize:'26px', margin:'5px 0px 5px 0px'}}>
                         Incident Information
                     </span>
-                    <span style={{fontWeight:'600'}}>
+                     <span style={{fontWeight:'600'}}>
                         Type of Occupancy
                     </span>
-                    <span>
-                        {incident.type}
+                    {/* <input
+                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
+                        placeholder="Type of Occupancy"
+                        onChange={(e)=>{
+                            setIncident({...incident, type:e.target.value})
+                        }}
+                        value={incident.type}
+                    /> */}
+                   <div style={{display:'flex', alignItems:'center'}}>
+                    {/* <NestedDropdown
+                        handleType={(e)=>{
+                            setIncident({...incident, type:e})
+                        }}
+                    /> */}
+                    <SelectWithID
+                        options={fireTypes}
+                        onChange={(e)=>{
+                            setIncident({...incident, type:e.target.value})
+                        }}
+                        value={incident.type}
+                        loading={false}
+                        field={'name'}
+                    />
+                    <span style={{marginLeft:'9px'}}>
+                    {incident.type?.name}
                     </span>
+                    </div>
                     <span style={{fontWeight:'600'}}>
                         Name of Owner
                     </span>
-                    <span>
-                        {incident.owner}
-                    </span>
+                    <input
+                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
+                        placeholder="Owner"
+                        onChange={(e)=>{
+                            setIncident({...incident, owner:e.target.value})
+                        }}
+                        value={incident.owner}
+                        disabled={parseInt(user.user_type_id) !== 5}
+                    />
                     <span style={{fontWeight:'600'}}>
                         Fatality
                     </span>
-                    <span>
-                        {incident.fatality}
-                    </span>
+                    <input 
+                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
+                        placeholder="Fatality"
+                        onChange={(e)=>{
+                            setIncident({...incident, fatality:e.target.value})
+                        }}
+                        value={incident.fatality}
+                        disabled={parseInt(user.user_type_id) !== 5}
+
+                    />
                     <span style={{fontWeight:'600'}}>
                         Estimated Damages
                     </span>
-                    <span>
-                        {incident.damages}
-                    </span>
+                    <input
+                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
+                        placeholder="Damages"
+                        onChange={(e)=>{
+                            setIncident({...incident, damages:e.target.value})
+                        }}
+                        value={incident.damages}
+                        disabled={parseInt(user.user_type_id) !== 5}
+
+                    />
                     <span style={{fontWeight:'600'}}>
                         Injured
                     </span>
-                    <span>
-                        {incident.injured}
-                    </span>
+                    <input
+                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
+                        placeholder="injured"
+                        onChange={(e)=>{
+                            setIncident({...incident, injured:e.target.value})
+                        }}
+                        value={incident.injured}
+                        disabled={parseInt(user.user_type_id) !== 5}
+                    />
                     <span style={{fontWeight:'600'}}>
                         Number of House/Establishment
                     </span>
-                    <span>
-                        {incident.numHouseAndEstablishment}
-                    </span>
+                    <input
+                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
+                        placeholder="Number House/Establishment"
+                        onChange={(e)=>{
+                            setIncident({...incident, numHouseAndEstablishment:e.target.value})
+                        }}
+                        value={incident.numHouseAndEstablishment}
+                        disabled={parseInt(user.user_type_id) !== 5}
+                    />
                     <span style={{fontWeight:'600'}}>
                         Number of Family Affected
                     </span>
-                    <span>
-                        {incident.numFamilyAffected}
-                    </span>
+                    <input
+                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
+                        placeholder="Number of affected"
+                        onChange={(e)=>{
+                            setIncident({...incident, numFamilyAffected:e.target.value})
+                        }}
+                        value={incident.numFamilyAffected}
+                        disabled={parseInt(user.user_type_id) !== 5}
+                    />
                     <span style={{fontWeight:'600'}}>
                         Number of Trucks Responded
                     </span>
-                    <span>
-                        {incident.numTrucksResponded}
-                    </span>
+                    <input
+                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
+                        placeholder="Number of trucks responded"
+                        onChange={(e)=>{
+                            setIncident({...incident, numTrucksResponded:e.target.value})
+                        }}
+                        value={incident.numTrucksResponded}
+                        disabled={parseInt(user.user_type_id) !== 5}
+                    />
 
             </div>
 
@@ -208,34 +273,58 @@ const UpdateIncident = () => {
                     <span style={{fontWeight:'600'}}>
                         Ground Commander
                     </span>
-                    <span>
-                        {responder.commander}
-                    </span>
-
+                    <input
+                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
+                        placeholder="Name"
+                        onChange={(e)=>{
+                            setResponder({...responder, commander:e.target.value})
+                        }}
+                        value={responder.commander}
+                        disabled={parseInt(user.user_type_id) !== 5}
+                    />
                     <span style={{fontWeight:'600'}}>
                         Time/Date Reported
                     </span>
-                    <span>
-                        {responder.date}
-                    </span>
+                    <input 
+                        type="datetime-local" 
+                        value={responder.date}
+                        onChange={(e)=>{
+                            setResponder({...responder, date: DateTimeFormat( new Date(e.target.value) )})
+                        }}
+                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
+                        disabled={parseInt(user.user_type_id) !== 5}
+                    />
                     <span style={{fontWeight:'600'}}>
                         Responding Team
                     </span>
-                    <span>
-                        {responder.team}
-                    </span>
+                    <input
+                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
+                        placeholder="Name"
+                        onChange={(e)=>{
+                            setResponder({...responder, team:e.target.value})
+                        }}
+                        value={responder.team}
+                        disabled={parseInt(user.user_type_id) !== 5}
+                    />
                     <span style={{fontWeight:'600'}}>
                         Involved
                     </span>
-                    <span>
-                        {responder.involved}
-                    </span>
+                    <input
+                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
+                        placeholder="Involved"
+                        onChange={(e)=>{
+                            setResponder({...responder, involved:e.target.value})
+                        }}
+                        value={responder.involved}
+                        disabled={parseInt(user.user_type_id) !== 5}
+                    />
+
             </div>
 
             {/*  STATUS */}
              <div style={{display:'flex', flexDirection:'column', rowGap:'9px', width:'30%'}}>
                     <span style={{fontWeight:'500', fontSize:'26px', margin:'5px 0px 5px 0px'}}>Responder</span>
-                    <span style={{fontWeight:'600'}}>
+                       <span style={{fontWeight:'600'}}>
                         Time of Departure
                     </span>
                     <span>
@@ -244,28 +333,39 @@ const UpdateIncident = () => {
                     <span style={{fontWeight:'600'}}>
                         Time of arrival
                     </span>
-                    <span>
-                        {status.timeArrival}
-                    </span>
-
+                    <input
+                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
+                        placeholder="Name"
+                        onChange={(e)=>{
+                            setStatus({...status, timeArrival:e.target.value})
+                        }}
+                        value={status.timeArrival}
+                        disabled={parseInt(user.user_type_id) !== 5}
+                    />
                     <span style={{fontWeight:'600'}}>
                         Fire Out
                     </span>
-                    <span>
-                        {status.fireOut}
-                    </span>
+                    <input 
+                        style={{height:'32px', backgroundColor:'#E8E9EC', width:'100%', fontSize:'16px'}}
+                        placeholder="Name"
+                        onChange={(e)=>{
+                            setStatus({...status, fireOut:e.target.value})
+                        }}
+                        value={status.fireOut}
+                        disabled={parseInt(user.user_type_id) !== 5}
+                    />
                     <span style={{fontWeight:'600'}}>
                        Status
                     </span>
-                     {listFireStatus?.length > 0 &&
-                   <SelectWithID
-                        options={listFireStatus}
-                        onChange={handleChangeStatus}
-                        value={status.status}
-                        loading={false}
-                        field={'status'}
-                   />
-                     }
+                    {listFireStatus.length > 0 &&
+                     <SelectWithID
+                            options={listFireStatus}
+                            onChange={handleChangeStatus}
+                            value={status.status}
+                            loading={false}
+                            field={'status'}
+                        />
+                    }
 
             </div>
         </div>
